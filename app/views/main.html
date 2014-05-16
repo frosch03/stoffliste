@@ -1,0 +1,29 @@
+<div class="header">
+  <ul class="nav nav-pills pull-right">
+  <li class="active"><a ng-href="#">Home</a></li>
+    <li><a ng-href="#">About</a></li>
+  </ul>
+  <h3 class="text-muted">Stoff Liste</h3>
+</div>
+
+{{ info }}
+
+
+<form name="metaForm" role="form" class="form-horizontal">
+  ID:
+  <input type="text" name="id" ng-model="cloth.id" placeholder="# Stoff" class="form-control"> 
+  <h1>Metrage:</h1>
+    <input type="text" name="width" ng-model="cloth.width" placeholder="Nutzbreite [m]" class="form-control"> 
+    <input type="text" name="length" ng-model="cloth.length" placeholder="Länge [m]" class="form-control">
+  <h1>Metainfos:</h1>
+  <input type="text" name="color" ng-model="cloth.color" placeholder="Farbe" class="form-control">
+  <input type="text" name="ingredients" ng-model="cloth.ingredients" placeholder="Materialzusammensetzung" class="form-control">
+
+  <span class="glyphicon glyphicon-heart" ng-click="createCloth()">CreateCloth()</span>
+</form>
+
+
+
+<div class="footer">
+  <p><span class="glyphicon glyphicon-heart"></span> from frosch03</p>
+</div>
