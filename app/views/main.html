@@ -1,7 +1,7 @@
 <div class="header">
   <ul class="nav nav-pills pull-right">
-  <li class="active"><a ng-href="#">Home</a></li>
-    <li><a ng-href="#">About</a></li>
+  <li class="active"><a ng-href="#">Neuer Stoff</a></li>
+    <li><a ng-href="#/list">Stoff Liste</a></li>
   </ul>
   <h3 class="text-muted">Stoff Liste</h3>
 </div>
@@ -19,7 +19,9 @@
   <input type="text" name="color" ng-model="cloth.color" placeholder="Farbe" class="form-control">
   <input type="text" name="ingredients" ng-model="cloth.ingredients" placeholder="Materialzusammensetzung" class="form-control">
 
-  <span class="glyphicon glyphicon-heart" ng-click="createCloth()">CreateCloth()</span>
+<button type="submit" class="btn btn-default">
+  <span class="glyphicon glyphicon-heart" ng-click="createCloth()">
+    CreateCloth()</span></button>
 </form>
 
 
