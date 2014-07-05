@@ -6,11 +6,10 @@
   <h3 class="text-muted">Stoff Liste</h3>
 </div>
 
-{{ info }}
 
-
+<section class="card">
 <form name="metaForm" role="form" class="form-horizontal">
-  ID:
+  <h1>Stoff</h1>
   <input type="text" name="id" ng-model="cloth.id" placeholder="# Stoff" class="form-control"> 
   <h1>Metrage:</h1>
     <input type="text" name="width" ng-model="cloth.width" placeholder="Nutzbreite [m]" class="form-control"> 
@@ -23,6 +22,7 @@
   <span class="glyphicon glyphicon-heart" ng-click="createCloth()">
     CreateCloth()</span></button>
 </form>
+</section>
 
 
 

@@ -2,7 +2,7 @@
 
 var lst = angular.module('stoffListeApp');
 
-lst.factory('sdb', function($q, $http, pouchdb) {
+lst.factory('listSDB', function($q, $http, pouchdb) {
     var db = pouchdb.create('stofflistendb');
     db.replicate.from('http://127.0.0.1:5984/stofflistendb', {live: true});
     db.replicate.to('stofflistendb', {live: true});
@@ -23,19 +23,26 @@ lst.factory('sdb', function($q, $http, pouchdb) {
     return {
         getCloths: getCloths
     };
+
+
 });
 
-lst.controller('ListCtrl', function ($scope, $http, sdb) {
+lst.controller('ListCtrl', function ($scope, $http, listSDB) {
     $scope.awesomeThings = [
       'HTML5 Boilerplate',
       'AngularJS',
       'Karma'
     ];
     
-    $scope.blub = 'hello';
-    sdb.getCloths().then(function (cloths) {
+    listSDB.getCloths().then(function (cloths) {
         $scope.cloths = cloths;
+
     });
-    $scope.blub = 'hello';
+
+    $scope.$parent.isopen = ($scope.$parent.default === $scope.cloth);
+    
+    $scope.$watch('isopen', function (newvalue, oldvalue, scope) {
+        $scope.$parent.isopen = newvalue;
+    });
 
 });

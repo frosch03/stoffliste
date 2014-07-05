@@ -6,7 +6,8 @@ angular
     'ngResource',
     'ngSanitize',
     'ngRoute',
-    'pouchdb'
+    'pouchdb',
+    'ui.bootstrap'
   ]).config(function ($routeProvider) {
     $routeProvider
       .when('/', {
@@ -16,6 +17,10 @@ angular
       .when('/list', {
         templateUrl: 'views/list.html',
         controller: 'ListCtrl'
+      })
+      .when('/show/:id', {
+        templateUrl: 'views/show.html',
+        controller: 'ShowCtrl'
       })
       .otherwise({
         redirectTo: '/'

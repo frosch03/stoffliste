@@ -6,10 +6,20 @@
   <h3 class="text-muted">Stoff Liste</h3>
 </div>
 
-<ul>
-  <li ng-repeat="cloth in cloths">{{ cloth.id }}</li>
-</ul>
-
+<accordion close-others="isStacked">
+  <accordion-group ng-controller="ListCtrl" ng-repeat="cloth in cloths" heading="{{ cloth.id }}" is-open="isStacked" is-disabled="!isStacked" ng-click="isStacked=!isStacked">
+    <div ng-controller="ShowCtrl" id="{{ cloth.id }}">
+      <accordion-heading is-open="false">
+        {{ cloth.id }}
+        <i class="pull-right glyphicon"
+           ng-class="{'glyphicon-chevron-down': isopen,
+                     'glyphicon-chevron-right': !isopen}" ng-click="isopen=!isopen"></i>
+      </accordion-heading>
+      {{ acloth.color }} - ({{ acloth.ingredients }})
+    </div>
+    <a ng-href="#/show/{{ cloth.id }}">{{ cloth.id }}</a>
+  </accordion-group>
+</accordion>
 
 <div class="footer">
   <p><span class="glyphicon glyphicon-heart"></span> from frosch03</p>
