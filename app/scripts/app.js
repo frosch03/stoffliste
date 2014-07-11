@@ -7,7 +7,8 @@ angular
     'ngSanitize',
     'ngRoute',
     'pouchdb',
-    'ui.bootstrap'
+    'ui.bootstrap',
+    'flow'
   ]).config(function ($routeProvider) {
     $routeProvider
       .when('/', {
@@ -26,3 +27,4 @@ angular
         redirectTo: '/'
       });
   });
+

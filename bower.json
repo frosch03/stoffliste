@@ -14,7 +14,8 @@
     "angular-ui-utils": "*",
     "angular-bootstrap": "*",
     "CornerCouch": "*",
-    "angular-pouchdb": "~0.1.5"
+    "angular-pouchdb": "~0.1.5",
+    "ng-flow": "~2"
   },
   "devDependencies": {
     "angular-mocks": "1.2.15",

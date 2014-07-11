@@ -20,3 +20,4 @@ describe('Controller: MainCtrl', function () {
     expect(scope.awesomeThings.length).toBe(3);
   });
 });
+

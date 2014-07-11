@@ -6,18 +6,27 @@
   <h3 class="text-muted">Stoff Liste</h3>
 </div>
 
-<accordion close-others="isStacked">
-  <accordion-group ng-controller="ListCtrl" ng-repeat="cloth in cloths" heading="{{ cloth.id }}" is-open="isStacked" is-disabled="!isStacked" ng-click="isStacked=!isStacked">
+<accordion close-others="isopen">
+  <accordion-group ng-controller="ListCtrl" ng-repeat="cloth in cloths" heading="{{ cloth.id }}" is-open="isopen" is-disabled="!isopen" ng-click="isopen=!isopen">
     <div ng-controller="ShowCtrl" id="{{ cloth.id }}">
       <accordion-heading is-open="false">
-        {{ cloth.id }}
+        <a href="/show/{{ cloth.id }}">{{ cloth.id }}</a>
         <i class="pull-right glyphicon"
            ng-class="{'glyphicon-chevron-down': isopen,
-                     'glyphicon-chevron-right': !isopen}" ng-click="isopen=!isopen"></i>
+                      'glyphicon-chevron-right': !isopen}"></i>
+                <img class="pull-right" ng-src="http://192.168.0.11:5984/stofflistendb/{{ acloth._id }}/image" width="100px" height="20px" ng-show="true" />
       </accordion-heading>
-      {{ acloth.color }} - ({{ acloth.ingredients }})
+      <span class="pull-right glyphicon glyphicon-remove" style="cursor:pointer" ng-click="deleteCloth()"></span>
+      <span>
+        <ul>
+          <li> <strong> Name </strong> {{ acloth._id }} </li>
+          <li> <strong> Metrage </strong> {{ acloth.length }}x{{ acloth.width}} [m*m]</li>
+          <li> <strong> Ingredients </strong> {{ acloth.ingredients }} </li>
+          <li> <strong> Color </strong> {{ acloth.color }} </li>
+        </ul>
+        <img class="pull-right" ng-src="http://192.168.0.11:5984/stofflistendb/{{ acloth._id }}/image" />
+      </span>
     </div>
-    <a ng-href="#/show/{{ cloth.id }}">{{ cloth.id }}</a>
   </accordion-group>
 </accordion>
 
