@@ -10,13 +10,14 @@
   <accordion-group ng-repeat="cloth in cloths" heading="{{ cloth._id }}" is-open="isopen" is-disabled="!isopen" ng-click="isopen=!isopen">
     <div id="{{ cloth._id }}">
       <accordion-heading is-open="false">
-        <a href="/show/{{ cloth._id }}">{{ cloth._id }}</a>
+        <a ng-href="#/show/{{ cloth._id }}" ng-click="">{{ cloth._id }}</a>
         <i class="pull-right glyphicon"
            ng-class="{'glyphicon-chevron-down': isopen,
                       'glyphicon-chevron-right': !isopen}"></i>
-                <img class="pull-right" ng-src="http://192.168.0.11:5984/stofflistendb/{{ cloth._id }}/image" width="100px" height="20px" ng-show="true" />
+                <img class="pull-right" ng-src="http://192.168.0.11:5984/stoffliste/{{ cloth._id }}/image" width="100px" height="20px" ng-show="true" />
       </accordion-heading>
       <button class="btn btn-default pull-right glyphicon glyphicon-remove" style="cursor:pointer" ng-click="remove(cloth._id)"></button>
+      <button class="btn btn-default pull-right glyphicon glyphicon-edit" style="cursor:pointer" ng-href="/show/cloth._id" ng-click=""></button>
       <span>
         <ul>
           <li> <strong> Name </strong> {{ cloth._id }} </li>
@@ -24,7 +25,7 @@
           <li> <strong> Ingredients </strong> {{ cloth.ingredients }} </li>
           <li> <strong> Color </strong> {{ cloth.color }} </li>
         </ul>
-        <img class="pull-right" ng-src="http://192.168.0.11:5984/stofflistendb/{{ cloth._id }}/image" />
+        <img class="pull-right" ng-src="http://192.168.0.11:5984/stoffliste/{{ cloth._id }}/image" />
       </span>
     </div>
   </accordion-group>

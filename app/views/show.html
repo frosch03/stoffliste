@@ -3,19 +3,19 @@
   <li><a ng-href="#">Neuer Stoff</a></li>
   <li><a ng-href="#/list">Stoff Liste</a></li>
   </ul>
-  <h3 class="text-muted">Stoff Liste - Stoff #{{ actualId }}</h3>
+  <h3 class="text-muted">Stoff Liste - Stoff #{{ cloth._id }}</h3>
 </div>
 
 <section class="card">
 <form name="metaForm" role="form" class="form-horizontal">
   <h1>Stoff</h1>
-  <input type="text" name="id" ng-model="cloth.id" placeholder="{{ actualId }}" class="form-control" disabled="enabled">
+  <input type="text" name="id" ng-model="cloth._id" class="form-control" disabled="enabled">
   <h1>Metrage:</h1>
-    <input type="text" name="width" ng-model="cloth.width" placeholder="{{ acloth.width }}" class="form-control" disabled="islocked"> 
-    <input type="text" name="length" ng-model="cloth.length" placeholder="{{ acloth.length }}" class="form-control" disabled="islocked">
+    <input type="text" name="width" ng-model="cloth.width" class="form-control" disabled="islocked"> 
+    <input type="text" name="length" ng-model="cloth.length" class="form-control" disabled="islocked">
   <h1>Metainfos:</h1>
-  <input type="text" name="color" ng-model="cloth.color" placeholder="{{ acloth.color }}" class="form-control" disabled="islocked">
-  <input type="text" name="ingredients" ng-model="cloth.ingredients" placeholder="{{ acloth.ingredients }}" class="form-control" disabled="islocked">
+  <input type="text" name="color" ng-model="cloth.color" class="form-control" disabled="islocked">
+  <input type="text" name="ingredients" ng-model="cloth.ingredients" class="form-control" disabled="islocked">
 
 <!-- <button type="submit" class="btn btn-default"> -->
 <!--   <span class="glyphicon glyphicon-heart" ng-click="islocked=!islocked"> -->

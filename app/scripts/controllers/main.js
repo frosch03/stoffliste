@@ -4,15 +4,14 @@ var main = angular.module('stoffListeApp');
 
 main.factory('myPouch', [function() {
 
-  var mydb = new PouchDB('stofflistendb');
-  console.log('db created');
-  PouchDB.replicate('stofflistendb', 'http://127.0.0.1:5984/stofflistendb', {continuous: true});
-  PouchDB.replicate('http://127.0.0.1:5984/stofflistendb', 'stofflistendb', {continuous: true});
+  var mydb = new PouchDB('stoffliste');
+  PouchDB.replicate('stoffliste', 'http://192.168.0.11:5984/stoffliste', {continuous: true});
+  PouchDB.replicate('http://192.168.0.11:5984/stoffliste', 'stoffliste', {continuous: true});
   return mydb;
 
 }]);
 
-main.factory('pouchWrapper', ['$q', '$rootScope', 'myPouch', function($q, $rootScope, myPouch) {
+main.factory('pouchWrapper', ['$q', '$rootScope', '$routeParams', 'myPouch', function($q, $rootScope, $routeParams, myPouch) {
 
     return {
         add: function(id, width, length, color, ingredients) {
@@ -35,9 +34,29 @@ main.factory('pouchWrapper', ['$q', '$rootScope', 'myPouch', function($q, $rootS
             });
             return deferred.promise;
         },
-        allCloths: function() {
+        getCloth: function() {
             var deferred = $q.defer();
-            myPouch.query('view/all', function(err, doc) {
+            myPouch.query(function(doc, emit) {
+                if(doc._id === $routeParams.docId) { 
+                    emit(doc._id, doc);
+                }
+            }, function(err, doc) {
+                if (err) {
+                    deferred.reject(err);
+                } else {
+                    deferred.resolve(doc.rows[0]);
+                }
+            });
+            return deferred.promise;
+        },
+        allCloths: function() {
+            var map = function(doc) {
+                if(doc._id) { 
+                    emit(doc._id, doc);
+                }
+            };
+            var deferred = $q.defer();
+            myPouch.query(map, function(err, doc) {
                 if (err) {
                     deferred.reject(err);
                 } else {
@@ -47,14 +66,52 @@ main.factory('pouchWrapper', ['$q', '$rootScope', 'myPouch', function($q, $rootS
             return deferred.promise;
         },
         nextId: function() {
+            var map = function(doc) {
+                if(doc._id && !doc._deleted_conflicts && !doc._conflicts) {
+                    var reg = new RegExp(/[A-Z]*([0-9]*)/);
+                    var res = reg.exec(doc._id);
+                    emit(doc._id, parseInt(res[1]));
+                }
+            };
+            var reduce = function (key, values, rereduce) {
+                var size=4;
+                var max = 0;
+                for(var i = 0; i < values.length; i++) {
+                    if(typeof values[i] === 'number') {
+                        max = Math.max(values[i], max); } }
+
+                var s = (max+1)+'';
+                while (s.length < size) {s = '0' + s;}
+
+                return('OS'+s);
+            };
             var deferred = $q.defer();
-            myPouch.query('view/nextid', function(err, doc) {
+            myPouch.query({map: map, reduce: reduce}, function(err, doc) {
                 if (err) {
                     deferred.reject(err);
                 } else {
                     deferred.resolve(doc.rows[0].value);
                 }
             });
+            return deferred.promise;
+        },
+        putAttachment: function(rid, name, rev, doc, type) {
+            var deferred = $q.defer();
+            
+            myPouch.get(rid, function(err, otherDoc) {
+                myPouch.putAttachment(rid, name, otherDoc._rev, otherDoc.doc + doc, type, function(err, res) {
+                    $rootScope.$apply(function() {
+                        if (err) {
+                            console.log('error: ' +err);
+                            deferred.reject(err);
+                        } else {
+                            console.log('res: ' +res);
+                            deferred.resolve(res);
+                        }
+                    });
+                });
+            });
+            // myPouch.put(rid, name, rev, doc, type, );
             return deferred.promise;
         },
         remove: function(id) {
@@ -127,25 +184,10 @@ main.directive('blob', function(){
 
 
 
-main.controller('MainCtrl', ['$scope', 'listener', 'pouchWrapper', function ($scope, listener, pouchWrapper) {
-
-    // if (!$scope.nextId) {
-    //     mainSDB.factory.getNextId($scope).then(
-    //         function (nextid) {
-    //             $scope.nextId = nextid;
-    //             console.log('nextId: '+nextid);
-    //         });
-    // }
-
-    // var createCloth = function () {
-    //     mainSDB.factory.createCloth($scope).then(
-    //         function () {
-    //             $scope.imgurl = URL.getObjectURL($scope.parent.cloth.blob);
-    //         });
-    //     $location.path('/list');
-    // };
+main.controller('MainCtrl', ['$scope', 'listener', 'pouchWrapper', '$routeParams', function ($scope, listener, pouchWrapper, $routeParams) {
 
     $scope.submit = function () {
+        console.log('files: '+metaForm.attachment.files.length);
         pouchWrapper.add(
             $scope.cloth.id, 
             $scope.cloth.width, 
@@ -158,6 +200,18 @@ main.controller('MainCtrl', ['$scope', 'listener', 'pouchWrapper', function ($sc
                 $scope.cloth.color = '';
                 $scope.cloth.ingredients = '';
                 $scope.getNextId();
+                if (res && res.ok) {
+                    if (metaForm.attachment.files.length) {
+                        var reader = new FileReader();
+                        reader.onload = (function(file) {
+                            return function(e) {
+                                console.log('e.target.result: '+e.target.result);
+                                pouchWrapper.putAttachment(res.id, 'image', res.rev, e.target.result, file.type);
+                            };
+                        })(metaForm.attachment.files.item(0));
+                        reader.readAsDataURL(metaForm.attachment.files.item(0));
+                    }
+                }
             }, function(reason) {
                 console.log(reason);
             });
@@ -171,16 +225,24 @@ main.controller('MainCtrl', ['$scope', 'listener', 'pouchWrapper', function ($sc
         });
     };
 
+    $scope.getCloth = function () {
+        pouchWrapper.getCloth($routeParams.docId).then(function(res, value) {
+            $scope.cloth = res.value;
+        });
+    };
+
     $scope.allCloths = function () {
         pouchWrapper.allCloths().then(function(res, value) {
             for (var i=0;i<res.length;i++){
+                //console.log(res);
                 $scope.cloths.push(res[i].value);
             }
         });
     };
 
     $scope.cloths = [];
-    $scope.allCloths();
+    if ($routeParams.docId) { $scope.getCloth(); }
+    if (!$routeParams.docId && !$scope.cloths) { $scope.allCloths(); }
 
     $scope.$on('newCloth', function(event, cloth) {
         if (cloth._id.substr(0,2) === 'OS') {
@@ -197,7 +259,6 @@ main.controller('MainCtrl', ['$scope', 'listener', 'pouchWrapper', function ($sc
     });
 
     $scope.getNextId = function () {
-        console.log('getting nextId');
         pouchWrapper.nextId().then(function(nextid, value) {
             $scope.nextId = nextid;
         });

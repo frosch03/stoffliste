@@ -18,7 +18,7 @@ angular
         templateUrl: 'views/list.html',
         controller: 'MainCtrl'
       })
-      .when('/show/:id', {
+      .when('/show/:docId', {
         templateUrl: 'views/show.html',
         controller: 'MainCtrl'
       })
