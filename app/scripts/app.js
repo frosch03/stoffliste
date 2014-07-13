@@ -6,7 +6,6 @@ angular
     'ngResource',
     'ngSanitize',
     'ngRoute',
-    'pouchdb',
     'ui.bootstrap',
     'flow'
   ]).config(function ($routeProvider) {
@@ -17,14 +16,13 @@ angular
       })
       .when('/list', {
         templateUrl: 'views/list.html',
-        controller: 'ListCtrl'
+        controller: 'MainCtrl'
       })
       .when('/show/:id', {
         templateUrl: 'views/show.html',
-        controller: 'ShowCtrl'
+        controller: 'MainCtrl'
       })
       .otherwise({
         redirectTo: '/'
       });
   });
-

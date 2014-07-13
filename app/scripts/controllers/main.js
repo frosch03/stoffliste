@@ -2,6 +2,110 @@
 
 var main = angular.module('stoffListeApp');
 
+main.factory('myPouch', [function() {
+
+  var mydb = new PouchDB('stofflistendb');
+  console.log('db created');
+  PouchDB.replicate('stofflistendb', 'http://127.0.0.1:5984/stofflistendb', {continuous: true});
+  PouchDB.replicate('http://127.0.0.1:5984/stofflistendb', 'stofflistendb', {continuous: true});
+  return mydb;
+
+}]);
+
+main.factory('pouchWrapper', ['$q', '$rootScope', 'myPouch', function($q, $rootScope, myPouch) {
+
+    return {
+        add: function(id, width, length, color, ingredients) {
+            var deferred = $q.defer();
+            var doc = {
+                _id:         id,
+                width:       width,
+                length:      length,
+                color:       color,
+                ingredients: ingredients
+            };
+            myPouch.post(doc, function(err, res) {
+                $rootScope.$apply(function() {
+                    if (err) {
+                        deferred.reject(err);
+                    } else {
+                        deferred.resolve(res);
+                    }
+                });
+            });
+            return deferred.promise;
+        },
+        allCloths: function() {
+            var deferred = $q.defer();
+            myPouch.query('view/all', function(err, doc) {
+                if (err) {
+                    deferred.reject(err);
+                } else {
+                    deferred.resolve(doc.rows);
+                }
+            });
+            return deferred.promise;
+        },
+        nextId: function() {
+            var deferred = $q.defer();
+            myPouch.query('view/nextid', function(err, doc) {
+                if (err) {
+                    deferred.reject(err);
+                } else {
+                    deferred.resolve(doc.rows[0].value);
+                }
+            });
+            return deferred.promise;
+        },
+        remove: function(id) {
+            var deferred = $q.defer();
+            myPouch.get(id, function(err, doc) {
+                $rootScope.$apply(function() {
+                    if (err) {
+                        deferred.reject(err);
+                    } else {
+                        myPouch.remove(doc, function(err, res) {
+                            $rootScope.$apply(function() {
+                                if (err) {
+                                    deferred.reject(err);
+                                } else {
+                                    deferred.resolve(res);
+                                }
+                            });
+                        });
+                    }
+                });
+            });
+            return deferred.promise;
+        }
+    };
+
+}]);
+
+main.factory('listener', ['$rootScope', 'myPouch', function($rootScope, myPouch) {
+
+    myPouch.changes({
+        continuous: true,
+        onChange: function(change) {
+            if (!change.deleted) {
+                $rootScope.$apply(function() {
+                    myPouch.get(change.id, function(err, doc) {
+                        $rootScope.$apply(function() {
+                            if (err) { console.log(err); }
+                            $rootScope.$broadcast('newCloth', doc);
+                        });
+                    });
+                });
+            } else {
+                $rootScope.$apply(function() {
+                    $rootScope.$broadcast('delCloth', change.id);
+                });
+            }
+        }
+    });
+}]);
+
+
 main.directive('blob', function(){
     return {
         scope: {
@@ -22,169 +126,83 @@ main.directive('blob', function(){
 });
 
 
-main.factory('mainSDB', function($q, $http, pouchdb) {
-    var db      = pouchdb.create('stofflistendb');
-    db.replicate.from('stofflistendb', {continous: true});
-    db.replicate.to('http://192.168.0.11:5984/stofflistendb', {continous: true});
 
-    var factory = {};
+main.controller('MainCtrl', ['$scope', 'listener', 'pouchWrapper', function ($scope, listener, pouchWrapper) {
 
-    factory.push = function () {
-        var deferred = $q.defer();
-        // db.replicate.from('stofflistendb');
-        // db.replicate.to('http://192.168.0.11:5984/stofflistendb');
-        db.query('view/conflicts',
-                function (err, data) {
-                    if (data) {
-                        if (data.rows.length > 0) {
-                            for(var i=0;i<data.rows.length;i++) {
-                                db.get(data.rows[i].id).then(
-                                    function (confdata) {
-                                        db.remove(data.rows[i].id,
-                                                  confdata._rev).then(
-                                                      function (resp) { console.log('conflicting data removed: '+resp); });
-                                        db.put(confdata,
-                                               data.rows[i].id,
-                                               data.rows[i].key[0]
-                                              );
-                                    });
-                            }
-                            //db.replicate.from('stofflistendb');
-                            // db.replicate.to('http://192.168.0.11:5984/stofflistendb');
-                            console.log('replicated fixed conflicts');
-                        }
-                        console.log('no conflicts found');
-                    }
-                });
-        return deferred.promise;
-    };
+    // if (!$scope.nextId) {
+    //     mainSDB.factory.getNextId($scope).then(
+    //         function (nextid) {
+    //             $scope.nextId = nextid;
+    //             console.log('nextId: '+nextid);
+    //         });
+    // }
 
-    factory.pull = function () {
-        var deferred = $q.defer();
-        // db.replicate.from('http://192.168.0.11:5984/stofflistendb');// .on('complete', function () {
-        db.query('view/conflicts',
-                 function (err, data) {
-                     console.log('starten to view conflicts');
-                     if (data) {
-                         if (data.rows.length > 0) {
-                             for(var i=0;i<data.rows.length;i++) {
-                                 var inner = data.rows[i];
-                                 db.get(inner.id).then(
-                                     function (confdata) {
-                                         db.remove(inner.id,
-                                                   confdata._rev).then(
-                                                       function (resp) { console.log('conflicting data removed: '+resp); });
-                                         db.put(confdata,
-                                                inner.id,
-                                                inner.key[0]
-                                               );
-                                     });
-                             }
-                             // db.replicate.from('stofflistendb');
-                             // db.replicate.to('http://192.168.0.11:5984/stofflistendb');
-                             console.log('replicated fixed conflicts');
-                         }
-                         console.log('no conflicts found');
-                     }
-                 });
-        //});
-        return deferred.promise;
-    };
+    // var createCloth = function () {
+    //     mainSDB.factory.createCloth($scope).then(
+    //         function () {
+    //             $scope.imgurl = URL.getObjectURL($scope.parent.cloth.blob);
+    //         });
+    //     $location.path('/list');
+    // };
 
-    factory.del = function () {
-        var deferred = $q.defer();
-        db.destroy('stofflistendb');
-        console.log('stofflistendb destroyed');
-        return deferred.promise;
-    };
-
-    factory.getNextId = function($scope) {
-        var deferred = $q.defer();
-        db.query('view/nextid',
-                 function(err, data) {
-                     if (err) { 
-                         console.log('error: '+err); 
-                     } 
-                     else {
-                         if (data.rows.length > 0) {
-                             //$scope.nextId = data.rows[0].value;
-                             return deferred.resolve(data.rows[0].value); 
-                         } else { 
-                             //$scope.nextId = 'OS0001';
-                             return deferred.resolve('OS0001'); 
-                         }
-                     }
-                 });
-        return deferred.promise;
-    };
-    
-    factory.createCloth = function($scope) {
-        var deferred = $q.defer();
-        if ($scope.nextId === $scope.cloth.id) {
-            db.get($scope.nextId, function (err, otherDoc) {
-                db.put({
-                    _id:    $scope.nextId, 
-                    width:  $scope.cloth.width,
-                    length: $scope.cloth.length,
-                    color:  $scope.cloth.color,
-                    ingredients: $scope.cloth.ingredients
-                });
-            }).then(function () {
-                db.get($scope.nextId, function(err, otherDoc) {
-                    db.putAttachment($scope.nextId, 
-                                     'image',
-                                     otherDoc._rev,
-                                     $scope.cloth.blob,
-                                     'image/png',
-                                     function (err, resp) {
-                                         if (err) { console.error('error: ' + err); }
-                                         else { 
-                                             if (resp) { console.log('resp: ' + resp); }
-                                             else { console.log('hääää??'); }
-                                         }
-                                     });
-                    });
-            }).then(function ($scope) {
-                factory.push();
+    $scope.submit = function () {
+        pouchWrapper.add(
+            $scope.cloth.id, 
+            $scope.cloth.width, 
+            $scope.cloth.length, 
+            $scope.cloth.color, 
+            $scope.cloth.ingredients).then(function(res) {
+                $scope.cloth.id = '';
+                $scope.cloth.width = '';
+                $scope.cloth.length = '';
+                $scope.cloth.color = '';
+                $scope.cloth.ingredients = '';
+                $scope.getNextId();
+            }, function(reason) {
+                console.log(reason);
             });
-        } else { 
-            alert('ID mismatch: ('+$scope.cloth.id + '!=' + $scope.nextId+')');
+    };
+
+    $scope.remove = function (id) {
+        pouchWrapper.remove(id).then(function(res) {
+            console.log(res);
+        }, function(reason) {
+            console.log(reason);
+        });
+    };
+
+    $scope.allCloths = function () {
+        pouchWrapper.allCloths().then(function(res, value) {
+            for (var i=0;i<res.length;i++){
+                $scope.cloths.push(res[i].value);
+            }
+        });
+    };
+
+    $scope.cloths = [];
+    $scope.allCloths();
+
+    $scope.$on('newCloth', function(event, cloth) {
+        if (cloth._id.substr(0,2) === 'OS') {
+            $scope.cloths.push(cloth);
         }
-        return deferred.promise;
-    };
-    
-    return { factory : factory};
-});
+    });
 
-main.controller('MainCtrl', function ($scope, $http, $location, mainSDB) {
+    $scope.$on('delCloth', function(event, id) {
+        for (var i = 0; i<$scope.cloths.length; i++) {
+            if ($scope.cloths[i]._id === id) {
+                $scope.cloths.splice(i,1);
+            }
+        }
+    });
 
-    if (!$scope.nextId) {
-        mainSDB.factory.getNextId($scope).then(
-            function (nextid) {
-                $scope.nextId = nextid;
-                console.log('nextId: '+nextid);
-            });
-    }
-
-    var createCloth = function () {
-        mainSDB.factory.createCloth($scope).then(
-            function () {
-                $scope.imgurl = URL.getObjectURL($scope.parent.cloth.blob);
-            });
-        $location.path('/list');
+    $scope.getNextId = function () {
+        console.log('getting nextId');
+        pouchWrapper.nextId().then(function(nextid, value) {
+            $scope.nextId = nextid;
+        });
     };
 
-    $scope.createCloth = createCloth;
+    $scope.getNextId();
 
-    $scope.push = function () {
-        mainSDB.factory.push();
-    };
-
-    $scope.pull = function () {
-        mainSDB.factory.pull();
-    };
-
-    $scope.del = function () {
-        mainSDB.factory.del();
-    };
-});
+}]);

@@ -2,9 +2,6 @@
   <ul class="nav nav-pills pull-right">
   <li class="active"><a ng-href="#">Neuer Stoff</a></li>
     <li><a ng-href="#/list">Stoff Liste</a></li>
-    <li><a ng-click="push()">Push</a></li>
-    <li><a ng-click="pull()">Pull</a></li>
-    <li><a ng-click="del()">Delete</a></li>
   </ul>
   <h3 class="text-muted">Stoff Liste - Neuen Stoff anlegen:</h3>
 </div>
@@ -21,10 +18,12 @@
     <input type="text" name="color" ng-model="cloth.color" placeholder="Farbe" class="form-control">
     <input type="text" name="ingredients" ng-model="cloth.ingredients" placeholder="Materialzusammensetzung" class="form-control">
     <input type="file" name="attachment" data-blob="cloth.blob" class="form-control"/>
-    <button type="submit" class="btn btn-default" ng-click="createCloth()">
+    <button type="submit" class="btn btn-default" ng-click="submit()">
       <span class="glyphicon glyphicon-heart">Hinzufügen</span></button>
   </form>
 </section>
+
+
 
 
 
