@@ -45,7 +45,7 @@ input {
   padding:.75rem 1rem;
   border-radius:3px;
   /* box-shadow:0 1px 2px #aaa; */
-  transition:.5s, margin-bottom .15s;
+  /* transition:.5s, margin-bottom .15s; */
   /* background-color: rgba(0, 0, 0, 0); */
 }
 
@@ -82,19 +82,19 @@ input:focus + header {
  transform-origin:top right;
 }
 
-@keyframes fly-in-from-left {
-  from {
-    transform:translateY(15rem) rotate(15deg);
-    opacity:0;
-  }
-}
+/* @keyframes fly-in-from-left { */
+/*   from { */
+/*     transform:translateY(15rem) rotate(15deg); */
+/*     opacity:0; */
+/*   } */
+/* } */
 
-@keyframes fly-in-from-right {
-  from {
-    transform:translateY(15rem) rotate(-15deg);
-    opacity:0;
-  }
-}
+/* @keyframes fly-in-from-right { */
+/*   from { */
+/*     transform:translateY(15rem) rotate(-15deg); */
+/*     opacity:0; */
+/*   } */
+/* } */
 
 .card:after {
   position:absolute;

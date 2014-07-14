@@ -50,7 +50,7 @@ main.factory('pouchWrapper', ['$q', '$rootScope', '$routeParams', 'myPouch', fun
             return deferred.promise;
         },
         allCloths: function() {
-            var map = function(doc) {
+            var map = function(doc, emit) {
                 if(doc._id) { 
                     emit(doc._id, doc);
                 }
@@ -66,7 +66,7 @@ main.factory('pouchWrapper', ['$q', '$rootScope', '$routeParams', 'myPouch', fun
             return deferred.promise;
         },
         nextId: function() {
-            var map = function(doc) {
+            var map = function(doc, emit) {
                 if(doc._id && !doc._deleted_conflicts && !doc._conflicts) {
                     var reg = new RegExp(/[A-Z]*([0-9]*)/);
                     var res = reg.exec(doc._id);
@@ -187,7 +187,6 @@ main.directive('blob', function(){
 main.controller('MainCtrl', ['$scope', 'listener', 'pouchWrapper', '$routeParams', function ($scope, listener, pouchWrapper, $routeParams) {
 
     $scope.submit = function () {
-        console.log('files: '+metaForm.attachment.files.length);
         pouchWrapper.add(
             $scope.cloth.id, 
             $scope.cloth.width, 
@@ -200,18 +199,18 @@ main.controller('MainCtrl', ['$scope', 'listener', 'pouchWrapper', '$routeParams
                 $scope.cloth.color = '';
                 $scope.cloth.ingredients = '';
                 $scope.getNextId();
-                if (res && res.ok) {
-                    if (metaForm.attachment.files.length) {
-                        var reader = new FileReader();
-                        reader.onload = (function(file) {
-                            return function(e) {
-                                console.log('e.target.result: '+e.target.result);
-                                pouchWrapper.putAttachment(res.id, 'image', res.rev, e.target.result, file.type);
-                            };
-                        })(metaForm.attachment.files.item(0));
-                        reader.readAsDataURL(metaForm.attachment.files.item(0));
-                    }
-                }
+                // if (res && res.ok) {
+                //     if (metaForm.attachment.files.length) {
+                //         var reader = new FileReader();
+                //         reader.onload = (function(file) {
+                //             return function(e) {
+                //                 console.log('e.target.result: '+e.target.result);
+                //                 pouchWrapper.putAttachment(res.id, 'attachment', res.rev, e.target.result, file.type);
+                //             };
+                //         })(metaForm.attachment.files.item(0));
+                //         reader.readAsDataURL(metaForm.attachment.files.item(0));
+                //     }
+                // }
             }, function(reason) {
                 console.log(reason);
             });
@@ -220,6 +219,10 @@ main.controller('MainCtrl', ['$scope', 'listener', 'pouchWrapper', '$routeParams
     $scope.remove = function (id) {
         pouchWrapper.remove(id).then(function(res) {
             console.log(res);
+            $scope.cloths.filter(function (doc) {
+                return doc._id !== id;
+            })
+            $scope.getNextId();
         }, function(reason) {
             console.log(reason);
         });
@@ -234,7 +237,6 @@ main.controller('MainCtrl', ['$scope', 'listener', 'pouchWrapper', '$routeParams
     $scope.allCloths = function () {
         pouchWrapper.allCloths().then(function(res, value) {
             for (var i=0;i<res.length;i++){
-                //console.log(res);
                 $scope.cloths.push(res[i].value);
             }
         });
@@ -265,5 +267,15 @@ main.controller('MainCtrl', ['$scope', 'listener', 'pouchWrapper', '$routeParams
     };
 
     $scope.getNextId();
+
+    $scope.toggleSOpen = function () { 
+        if ($parent.newSopen) { $parent.newSopen = false; }
+        else { $parent.newSopen = true; }
+    };
+
+    $scope.toggleOpen = function () { 
+        if ($parent.isopen) { $parent.isopen = false; }
+        else { $parent.isopen = true; }
+    };
 
 }]);

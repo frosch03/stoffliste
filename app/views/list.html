@@ -16,8 +16,10 @@
                       'glyphicon-chevron-right': !isopen}"></i>
                 <img class="pull-right" ng-src="http://192.168.0.11:5984/stoffliste/{{ cloth._id }}/image" width="100px" height="20px" ng-show="true" />
       </accordion-heading>
-      <button class="btn btn-default pull-right glyphicon glyphicon-remove" style="cursor:pointer" ng-click="remove(cloth._id)"></button>
-      <button class="btn btn-default pull-right glyphicon glyphicon-edit" style="cursor:pointer" ng-href="/show/cloth._id" ng-click=""></button>
+      <div ng-click="">
+        <button class="btn btn-default pull-right glyphicon glyphicon-remove" style="cursor:pointer" ng-click="remove(cloth._id)"></button>
+        <button class="btn btn-default pull-right glyphicon glyphicon-edit" style="cursor:pointer" ng-href="/show/cloth._id" ng-click=""></button>
+      </div>
       <span>
         <ul>
           <li> <strong> Name </strong> {{ cloth._id }} </li>

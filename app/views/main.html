@@ -7,21 +7,62 @@
 </div>
 
 
-<section class="card" ng-controller="MainCtrl">
-  <form name="metaForm" role="form" class="form-horizontal">
-    <h1>Stoff</h1>
-    <input type="text" name="id" ng-model="cloth.id" placeholder="{{ nextId }}" class="form-control">
-    <h1>Metrage:</h1>
-    <input type="text" name="width" ng-model="cloth.width" placeholder="Nutzbreite [m]" class="form-control"> 
-    <input type="text" name="length" ng-model="cloth.length" placeholder="Länge [m]" class="form-control">
-    <h1>Metainfos:</h1>
-    <input type="text" name="color" ng-model="cloth.color" placeholder="Farbe" class="form-control">
-    <input type="text" name="ingredients" ng-model="cloth.ingredients" placeholder="Materialzusammensetzung" class="form-control">
-    <input type="file" name="attachment" data-blob="blob" class="form-control"/>
-    <button type="submit" class="btn btn-default" ng-click="submit()">
-      <span class="glyphicon glyphicon-heart">Hinzufügen</span></button>
-  </form>
-</section>
+<accordion close-others="true">
+  <accordion-group heading="Neuer Stoff" is-open="$parent.newSopen" >
+      <accordion-heading ng-click="toggleSOpen()">
+        Neuer Stoff
+        <i class="pull-right glyphicon"
+           ng-class="{'glyphicon-chevron-down': isopen,
+                      'glyphicon-chevron-right': !isopen}"></i>
+      </accordion-heading>
+      <section class="card" ng-controller="MainCtrl">
+        <button class="btn btn-default pull-right glyphicon glyphicon-ok" style="cursor:pointer" ng-click="submit(cloth._id, cloth.width, cloth.length, cloth.color, cloth.ingredients)"></button>
+        <form name="metaForm" role="form" class="form-horizontal">
+          <h1>Stoff</h1>
+          <input type="text" name="id" ng-model="cloth.id" placeholder="{{ nextId }}" class="form-control">
+          <h1>Metrage:</h1>
+          <input type="text" name="width" ng-model="cloth.width" placeholder="Nutzbreite [m]" class="form-control"> 
+          <input type="text" name="length" ng-model="cloth.length" placeholder="Länge [m]" class="form-control">
+          <h1>Metainfos:</h1>
+          <input type="text" name="color" ng-model="cloth.color" placeholder="Farbe" class="form-control">
+          <input type="text" name="ingredients" ng-model="cloth.ingredients" placeholder="Materialzusammensetzung" class="form-control">
+        </form>
+      </section>
+  </accordion-group>
+</accordion>
+
+<accordion close-others="true">
+  <accordion-group ng-repeat="cloth in cloths" heading="{{ cloth._id }}" is-open="isopen" is-disabled="!isopen" ng-click="isopen=!isopen">
+    <div id="{{ cloth._id }}">
+      <accordion-heading>
+          {{ cloth._id }} : ({{ cloth.length }}x{{ cloth.width}}), {{ cloth.color }}, {{ cloth.ingredients }}
+      </accordion-heading>
+      <div ng-click="">
+        <button class="btn btn-default pull-right glyphicon glyphicon-remove" style="cursor:pointer" ng-click="remove(cloth._id)"></button>
+        <button class="btn btn-default pull-right glyphicon glyphicon-edit" style="cursor:pointer" ng-href="/show/cloth._id" ng-click=""></button>
+      </div>
+      <section class="card" ng-controller="MainCtrl">
+        <button class="btn btn-default pull-right glyphicon glyphicon-ok" style="cursor:pointer" ng-click="submit(cloth._id, cloth.width, cloth.length, cloth.color, cloth.ingredients)"></button>
+        <form name="metaForm" role="form" class="form-horizontal">
+          <h1>Stoff</h1>
+          <input type="text" name="id" ng-model="cloth._id" placeholder="{{ cloth._id }}" class="form-control">
+          <h1>Metrage:</h1>
+          <input type="text" name="width" ng-model="cloth.width" placeholder="{{ cloth.widht }}" class="form-control"> 
+          <input type="text" name="length" ng-model="cloth.length" placeholder="{{ cloth.length }}" class="form-control">
+          <h1>Metainfos:</h1>
+          <input type="text" name="color" ng-model="cloth.color" placeholder="{{ cloth.color }}" class="form-control">
+          <input type="text" name="ingredients" ng-model="cloth.ingredients" placeholder="{{ cloth.ingredients }}" class="form-control">
+        </form>
+      </section>
+
+
+    </div>
+  </accordion-group>
+</accordion>
+
+
+
+
 
 
 
