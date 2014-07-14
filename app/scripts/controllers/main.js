@@ -262,6 +262,11 @@ main.controller('MainCtrl', ['$scope', 'listener', 'pouchWrapper', '$routeParams
         $scope.allCloths(); 
     };
 
+    $scope.newmetrage = function () {
+        console.log($scope.inputForm);
+        $scope.inputForm.metrages.push({});
+    };
+
     $scope.cloths = [];
     if ($routeParams.docId) { $scope.getCloth(); }
     if (!$routeParams.docId && !$scope.cloths) { $scope.allCloths(); }
@@ -298,5 +303,22 @@ main.controller('MainCtrl', ['$scope', 'listener', 'pouchWrapper', '$routeParams
         if ($scope.isopen) { $scope.isopen = false; }
         else { $scope.isopen = true; }
     };
+
+    // $scope.addMetrageWidthTmp = function(){
+    //     if($scope.temp) $scope.rows.pop(); 
+    //     else if($scope.addName) $scope.temp = true;
+        
+    //     if($scope.addName) $scope.rows.push($scope.addName);
+    //     else $scope.temp = false;
+    // };
+
+    // $scope.addMetrageLengthTmp = function(){
+    //     if($scope.temp) $scope.rows.pop(); 
+    //     else if($scope.addName) $scope.temp = true;
+        
+    //     if($scope.addName) $scope.rows.push($scope.addName);
+    //     else $scope.temp = false;
+    // };
+
 
 }]);
