@@ -5,8 +5,8 @@ var main = angular.module('stoffListeApp');
 main.factory('myPouch', [function() {
 
   var mydb = new PouchDB('stoffliste');
-  PouchDB.replicate('stoffliste', 'http://192.168.0.11:5984/stoffliste', {continuous: true});
-  PouchDB.replicate('http://192.168.0.11:5984/stoffliste', 'stoffliste', {continuous: true});
+  PouchDB.replicate('stoffliste', 'http://192.168.0.14:5984/stoffliste', {continuous: true});
+  PouchDB.replicate('http://192.168.0.14:5984/stoffliste', 'stoffliste', {continuous: true});
   return mydb;
 
 }]);
@@ -14,16 +14,9 @@ main.factory('myPouch', [function() {
 main.factory('pouchWrapper', ['$q', '$rootScope', '$routeParams', 'myPouch', function($q, $rootScope, $routeParams, myPouch) {
 
     return {
-        add: function(id, width, length, color, ingredients) {
+        add: function(cloth) {
             var deferred = $q.defer();
-            var doc = {
-                _id:         id,
-                width:       width,
-                length:      length,
-                color:       color,
-                ingredients: ingredients
-            };
-            myPouch.post(doc, function(err, res) {
+            myPouch.post(cloth, function(err, res) {
                 $rootScope.$apply(function() {
                     if (err) {
                         deferred.reject(err);
@@ -34,11 +27,32 @@ main.factory('pouchWrapper', ['$q', '$rootScope', '$routeParams', 'myPouch', fun
             });
             return deferred.promise;
         },
+        update: function(cloth) {
+            var deferred = $q.defer();
+            myPouch.query(function(doc, emit) {
+                if(doc.id === cloth.id) { 
+                    emit(doc.id, doc);
+                }
+            }, function(err, doc) {
+                if (err) {
+                    deferred.reject(err);
+                } else {
+                    myPouch.put(cloth, doc._id, doc._rev, function (err, res) {
+                        if (err) {
+                            deferred.reject(err);
+                        } else { 
+                            deferred.resolve(res);
+                        }
+                    });
+                }
+            });
+            return deferred.promise;
+        },
         getCloth: function() {
             var deferred = $q.defer();
             myPouch.query(function(doc, emit) {
-                if(doc._id === $routeParams.docId) { 
-                    emit(doc._id, doc);
+                if(doc.id === $routeParams.docId) { 
+                    emit(doc.id, doc);
                 }
             }, function(err, doc) {
                 if (err) {
@@ -51,8 +65,8 @@ main.factory('pouchWrapper', ['$q', '$rootScope', '$routeParams', 'myPouch', fun
         },
         allCloths: function() {
             var map = function(doc, emit) {
-                if(doc._id) { 
-                    emit(doc._id, doc);
+                if(doc.id) { 
+                    emit(doc.id, doc);
                 }
             };
             var deferred = $q.defer();
@@ -67,10 +81,10 @@ main.factory('pouchWrapper', ['$q', '$rootScope', '$routeParams', 'myPouch', fun
         },
         nextId: function() {
             var map = function(doc, emit) {
-                if(doc._id && !doc._deleted_conflicts && !doc._conflicts) {
+                if(doc.id && !doc._deleted_conflicts && !doc._conflicts) {
                     var reg = new RegExp(/[A-Z]*([0-9]*)/);
-                    var res = reg.exec(doc._id);
-                    emit(doc._id, parseInt(res[1]));
+                    var res = reg.exec(doc.id);
+                    emit(doc.id, parseInt(res[1]));
                 }
             };
             var reduce = function (key, values, rereduce) {
@@ -116,21 +130,20 @@ main.factory('pouchWrapper', ['$q', '$rootScope', '$routeParams', 'myPouch', fun
         },
         remove: function(id) {
             var deferred = $q.defer();
-            myPouch.get(id, function(err, doc) {
-                $rootScope.$apply(function() {
-                    if (err) {
-                        deferred.reject(err);
-                    } else {
-                        myPouch.remove(doc, function(err, res) {
-                            $rootScope.$apply(function() {
-                                if (err) {
-                                    deferred.reject(err);
-                                } else {
-                                    deferred.resolve(res);
-                                }
-                            });
-                        });
-                    }
+            myPouch.query(function(doc, emit) {
+                if(doc.id === id) { 
+                    emit(doc._id, doc._rev);
+                }
+            }, function (err, doc) {
+                myPouch.remove(doc.rows[0].key, doc.rows[0].value, function(err, res) {
+                    $rootScope.$apply(function() {
+                        if (err) {
+                            deferred.reject(err);
+                        } else {
+                            $rootScope.$broadcast('delCloth', id);
+                            deferred.resolve(res);
+                        }
+                    });
                 });
             });
             return deferred.promise;
@@ -187,17 +200,14 @@ main.directive('blob', function(){
 main.controller('MainCtrl', ['$scope', 'listener', 'pouchWrapper', '$routeParams', function ($scope, listener, pouchWrapper, $routeParams) {
 
     $scope.submit = function () {
-        pouchWrapper.add(
-            $scope.cloth.id, 
-            $scope.cloth.width, 
-            $scope.cloth.length, 
-            $scope.cloth.color, 
-            $scope.cloth.ingredients).then(function(res) {
-                $scope.cloth.id = '';
-                $scope.cloth.width = '';
-                $scope.cloth.length = '';
-                $scope.cloth.color = '';
-                $scope.cloth.ingredients = '';
+        pouchWrapper.add($scope.cloth).then(function(res) {
+                $scope.cloth = {
+                    id: '',
+                    width: '',
+                    length: '',
+                    color: '',
+                    ingredients: ''
+                };
                 $scope.getNextId();
                 // if (res && res.ok) {
                 //     if (metaForm.attachment.files.length) {
@@ -219,13 +229,18 @@ main.controller('MainCtrl', ['$scope', 'listener', 'pouchWrapper', '$routeParams
     $scope.remove = function (id) {
         pouchWrapper.remove(id).then(function(res) {
             console.log(res);
-            $scope.cloths.filter(function (doc) {
-                return doc._id !== id;
-            })
             $scope.getNextId();
         }, function(reason) {
             console.log(reason);
         });
+    };
+
+    $scope.update = function () {
+        pouchWrapper.update($scope.cloth);// .then(function(res, value) {
+        //     // $scope.cloth.filter(function (doc) {
+        //     //     return doc.id !== res.value.id;
+        //     // }).push(res.value);
+        // });
     };
 
     $scope.getCloth = function () {
@@ -242,19 +257,24 @@ main.controller('MainCtrl', ['$scope', 'listener', 'pouchWrapper', '$routeParams
         });
     };
 
+    $scope.refresh = function () {
+        $scope.cloths = [];
+        $scope.allCloths(); 
+    };
+
     $scope.cloths = [];
     if ($routeParams.docId) { $scope.getCloth(); }
     if (!$routeParams.docId && !$scope.cloths) { $scope.allCloths(); }
 
     $scope.$on('newCloth', function(event, cloth) {
-        if (cloth._id.substr(0,2) === 'OS') {
+        if (cloth.id.substr(0,2) === 'OS') {
             $scope.cloths.push(cloth);
         }
     });
 
     $scope.$on('delCloth', function(event, id) {
         for (var i = 0; i<$scope.cloths.length; i++) {
-            if ($scope.cloths[i]._id === id) {
+            if ($scope.cloths[i].id === id) {
                 $scope.cloths.splice(i,1);
             }
         }
@@ -269,13 +289,14 @@ main.controller('MainCtrl', ['$scope', 'listener', 'pouchWrapper', '$routeParams
     $scope.getNextId();
 
     $scope.toggleSOpen = function () { 
-        if ($parent.newSopen) { $parent.newSopen = false; }
-        else { $parent.newSopen = true; }
+        if ($scope.newSopen) { $scope.newSopen = false; }
+        else { $scope.newSopen = true; }
     };
 
     $scope.toggleOpen = function () { 
-        if ($parent.isopen) { $parent.isopen = false; }
-        else { $parent.isopen = true; }
+        console.log('toggle');
+        if ($scope.isopen) { $scope.isopen = false; }
+        else { $scope.isopen = true; }
     };
 
 }]);

@@ -1,22 +1,21 @@
 <div class="header">
   <ul class="nav nav-pills pull-right">
   <li class="active"><a ng-href="#">Neuer Stoff</a></li>
-    <li><a ng-href="#/list" ng-click="allCloths()">Stoff Liste</a></li>
   </ul>
   <h3 class="text-muted">Stoff Liste - Neuen Stoff anlegen:</h3>
 </div>
 
 
 <accordion close-others="true">
-  <accordion-group heading="Neuer Stoff" is-open="$parent.newSopen" >
+  <accordion-group heading="Neuer Stoff" is-open="$scope.newSopen" >
       <accordion-heading ng-click="toggleSOpen()">
         Neuer Stoff
         <i class="pull-right glyphicon"
-           ng-class="{'glyphicon-chevron-down': isopen,
-                      'glyphicon-chevron-right': !isopen}"></i>
+           ng-class="{'glyphicon-chevron-down': $scope.newSopen,
+                      'glyphicon-chevron-right': !$scope.newSopen}"></i>
       </accordion-heading>
       <section class="card" ng-controller="MainCtrl">
-        <button class="btn btn-default pull-right glyphicon glyphicon-ok" style="cursor:pointer" ng-click="submit(cloth._id, cloth.width, cloth.length, cloth.color, cloth.ingredients)"></button>
+        <button class="btn btn-default pull-right glyphicon glyphicon-ok" style="cursor:pointer" ng-click="submit(cloth)"></button>
         <form name="metaForm" role="form" class="form-horizontal">
           <h1>Stoff</h1>
           <input type="text" name="id" ng-model="cloth.id" placeholder="{{ nextId }}" class="form-control">
@@ -32,31 +31,27 @@
 </accordion>
 
 <accordion close-others="true">
-  <accordion-group ng-repeat="cloth in cloths" heading="{{ cloth._id }}" is-open="isopen" is-disabled="!isopen" ng-click="isopen=!isopen">
-    <div id="{{ cloth._id }}">
-      <accordion-heading>
-          {{ cloth._id }} : ({{ cloth.length }}x{{ cloth.width}}), {{ cloth.color }}, {{ cloth.ingredients }}
-      </accordion-heading>
-      <div ng-click="">
-        <button class="btn btn-default pull-right glyphicon glyphicon-remove" style="cursor:pointer" ng-click="remove(cloth._id)"></button>
-        <button class="btn btn-default pull-right glyphicon glyphicon-edit" style="cursor:pointer" ng-href="/show/cloth._id" ng-click=""></button>
-      </div>
-      <section class="card" ng-controller="MainCtrl">
-        <button class="btn btn-default pull-right glyphicon glyphicon-ok" style="cursor:pointer" ng-click="submit(cloth._id, cloth.width, cloth.length, cloth.color, cloth.ingredients)"></button>
-        <form name="metaForm" role="form" class="form-horizontal">
-          <h1>Stoff</h1>
-          <input type="text" name="id" ng-model="cloth._id" placeholder="{{ cloth._id }}" class="form-control">
-          <h1>Metrage:</h1>
-          <input type="text" name="width" ng-model="cloth.width" placeholder="{{ cloth.widht }}" class="form-control"> 
-          <input type="text" name="length" ng-model="cloth.length" placeholder="{{ cloth.length }}" class="form-control">
-          <h1>Metainfos:</h1>
-          <input type="text" name="color" ng-model="cloth.color" placeholder="{{ cloth.color }}" class="form-control">
-          <input type="text" name="ingredients" ng-model="cloth.ingredients" placeholder="{{ cloth.ingredients }}" class="form-control">
-        </form>
-      </section>
-
-
-    </div>
+  <accordion-group ng-repeat="cloth in cloths" heading="{{ cloth.id }}" is-open="$scope.isopen">
+    <accordion-heading ng-click="toggleOpen()">
+      {{ cloth.id }} : ({{ cloth.length }}x{{ cloth.width}}), {{ cloth.color }}, {{ cloth.ingredients }}
+      <i class="pull-right glyphicon"  ng-click="toggleOpen()"
+         ng-class="{'glyphicon-chevron-down': $scope.isopen,
+                   'glyphicon-chevron-right': !$scope.isopen}"></i>
+    </accordion-heading>
+    <section class="card" ng-controller="MainCtrl">
+      <button class="btn btn-default pull-right glyphicon glyphicon-remove" style="cursor:pointer" ng-click="remove(cloth.id)"></button>
+      <button class="btn btn-default pull-right glyphicon glyphicon-ok" style="cursor:pointer" ng-click="update(cloth)"></button>
+      <form name="metaForm" role="form" class="form-horizontal">
+        <h1>Stoff</h1>
+        <input type="text" name="id" ng-model="cloth.id" placeholder="{{ cloth.id }}" class="form-control">
+        <h1>Metrage:</h1>
+        <input type="text" name="width" ng-model="cloth.width" placeholder="{{ cloth.widht }}" class="form-control"> 
+        <input type="text" name="length" ng-model="cloth.length" placeholder="{{ cloth.length }}" class="form-control">
+        <h1>Metainfos:</h1>
+        <input type="text" name="color" ng-model="cloth.color" placeholder="{{ cloth.color }}" class="form-control">
+        <input type="text" name="ingredients" ng-model="cloth.ingredients" placeholder="{{ cloth.ingredients }}" class="form-control">
+      </form>
+    </section>
   </accordion-group>
 </accordion>
 
