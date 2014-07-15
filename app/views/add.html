@@ -1,0 +1,46 @@
+<div class="header">
+  <ul class="nav nav-pills pull-right">
+  <li class="active"><a ng-href="#">Neuer Stoff</a></li>
+  </ul>
+  <h3 class="text-muted">Stoff Liste - Neuen Stoff anlegen:</h3>
+</div>
+
+<div ng-controller="AddCtrl">
+  <div style="background: #FFF">
+    <button class="btn btn-default pull-right glyphicon glyphicon-ok" style="cursor:pointer" ng-click="submit(cloth)"></button>
+    <form name="in" role="form" class="form-horizontal">
+      <h1>Stoff</h1>
+      <input type="text" name="id" ng-model="cloth.id" class="form-control">
+      <h1>Metrage:</h1>
+      <table class="table table-striped">
+        <tr ng-repeat="metrage in cloth.metrage | filter : search"  ng-class="{'muted':isTemp($index)}">
+          <td>{{metrage.width}}</td>
+          <td>{{metrage.length}}</td>
+          <td>
+            <button class="btn btn-danger btn-mini" ng-click="delMetrage(metrage)" ng-hide="isTemp($index)"><i class="btn-small btn-alert glyphicon glyphicon-trash"></i></button>
+          </td>
+        </tr>
+      </table>    
+      <span ng-class="{'input-append':addMetrage};">
+        <input type="text" name="width"  ng-model="additionalMetrage.width" class="form-control"> 
+        <input type="text" name="length"  ng-model="additionalMetrage.length" class="form-control" ng-change="addTemp()">
+        <input type="submit" class="btn btn-primary" ng-click="addMetrage()" ng-show="additionalMetrage.length" value="+ add"/>
+      </span>
+      <h1>Metainfos:</h1>
+      <input type="text" name="color" ng-model="cloth.color" class="form-control">
+      <input type="text" name="ingredients" ng-model="cloth.ingredients" class="form-control">
+    </form>
+
+    <h1>Stoff</h1>
+    {{ cloth.id }}
+    <h1>Metrage:</h1>
+    <h1>Metainfos:</h1>
+    {{ cloth.color }} <br />
+    {{ cloth.ingredients }} 
+  </div>
+
+</div>
+
+<div class="footer">
+  <p><span class="glyphicon glyphicon-heart"></span> from frosch03</p>
+</div>

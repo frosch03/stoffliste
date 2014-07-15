@@ -18,6 +18,10 @@ angular
         templateUrl: 'views/list.html',
         controller: 'MainCtrl'
       })
+      .when('/add', {
+        templateUrl: 'views/add.html',
+        controller: 'AddCtrl'
+      })
       .when('/show/:docId', {
         templateUrl: 'views/show.html',
         controller: 'MainCtrl'
