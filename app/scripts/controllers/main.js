@@ -272,9 +272,14 @@ main.controller('MainCtrl', ['$scope', 'listener', 'pouchWrapper', '$routeParams
     if (!$routeParams.docId && !$scope.cloths) { $scope.allCloths(); }
 
     $scope.$on('newCloth', function(event, cloth) {
-        if (cloth.id.substr(0,2) === 'OS') {
-            $scope.cloths.push(cloth);
-        }
+        $scope.cloths.push(cloth);
+    });
+
+    $scope.$on('addCloth', function(event, cloth) {
+        event.preventDefault();
+        console.log('new Cloth received');
+        pouchWrapper.add(cloth);
+        $scope.cloths.push(cloth);
     });
 
     $scope.$on('delCloth', function(event, id) {
@@ -303,22 +308,4 @@ main.controller('MainCtrl', ['$scope', 'listener', 'pouchWrapper', '$routeParams
         if ($scope.isopen) { $scope.isopen = false; }
         else { $scope.isopen = true; }
     };
-
-    // $scope.addMetrageWidthTmp = function(){
-    //     if($scope.temp) $scope.rows.pop(); 
-    //     else if($scope.addName) $scope.temp = true;
-        
-    //     if($scope.addName) $scope.rows.push($scope.addName);
-    //     else $scope.temp = false;
-    // };
-
-    // $scope.addMetrageLengthTmp = function(){
-    //     if($scope.temp) $scope.rows.pop(); 
-    //     else if($scope.addName) $scope.temp = true;
-        
-    //     if($scope.addName) $scope.rows.push($scope.addName);
-    //     else $scope.temp = false;
-    // };
-
-
 }]);
