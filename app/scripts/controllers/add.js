@@ -13,7 +13,7 @@ add.controller('AddCtrl', ['$scope', '$rootScope', function ($scope, $rootScope)
     };
 
     $scope.submit = function () {
-        $rootScope.$emit('addCloth', $scope.cloth);
+        $scope.$emit('addCloth', $scope.cloth);
     };
 
     $scope.temp = false;
