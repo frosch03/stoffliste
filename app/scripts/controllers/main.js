@@ -277,14 +277,13 @@ main.controller('MainCtrl', ['$scope', 'listener', 'pouchWrapper', '$routeParams
 
     $scope.$on('addCloth', function(event, cloth) {
         event.preventDefault();
-        console.log('new Cloth received');
+        $scope.getNextId();
         pouchWrapper.add(cloth);
-        $scope.cloths.push(cloth);
     });
 
     $scope.$on('delCloth', function(event, id) {
         for (var i = 0; i<$scope.cloths.length; i++) {
-            if ($scope.cloths[i].id === id) {
+            if ($scope.cloths[i]._id === id) {
                 $scope.cloths.splice(i,1);
             }
         }
