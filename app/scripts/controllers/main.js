@@ -199,32 +199,81 @@ main.directive('blob', function(){
 
 main.controller('MainCtrl', ['$scope', 'listener', 'pouchWrapper', '$routeParams', function ($scope, listener, pouchWrapper, $routeParams) {
 
+    // $scope.submit = function () {
+    //     pouchWrapper.add($scope.cloth).then(function(res) {
+    //             $scope.cloth = {
+    //                 id: '',
+    //                 width: '',
+    //                 length: '',
+    //                 color: '',
+    //                 ingredients: ''
+    //             };
+    //             $scope.getNextId();
+    //             // if (res && res.ok) {
+    //             //     if (metaForm.attachment.files.length) {
+    //             //         var reader = new FileReader();
+    //             //         reader.onload = (function(file) {
+    //             //             return function(e) {
+    //             //                 console.log('e.target.result: '+e.target.result);
+    //             //                 pouchWrapper.putAttachment(res.id, 'attachment', res.rev, e.target.result, file.type);
+    //             //             };
+    //             //         })(metaForm.attachment.files.item(0));
+    //             //         reader.readAsDataURL(metaForm.attachment.files.item(0));
+    //             //     }
+    //             // }
+    //         }, function(reason) {
+    //             console.log(reason);
+    //         });
+    // };
+
+
+
+
+
+
+
+
     $scope.submit = function () {
-        pouchWrapper.add($scope.cloth).then(function(res) {
-                $scope.cloth = {
-                    id: '',
-                    width: '',
-                    length: '',
-                    color: '',
-                    ingredients: ''
-                };
-                $scope.getNextId();
-                // if (res && res.ok) {
-                //     if (metaForm.attachment.files.length) {
-                //         var reader = new FileReader();
-                //         reader.onload = (function(file) {
-                //             return function(e) {
-                //                 console.log('e.target.result: '+e.target.result);
-                //                 pouchWrapper.putAttachment(res.id, 'attachment', res.rev, e.target.result, file.type);
-                //             };
-                //         })(metaForm.attachment.files.item(0));
-                //         reader.readAsDataURL(metaForm.attachment.files.item(0));
-                //     }
-                // }
-            }, function(reason) {
-                console.log(reason);
-            });
+        $scope.$emit('addCloth', $scope.cloth);
     };
+
+    $scope.temp = false;
+    $scope.addMetrage = function () {
+        $scope.temp = false;
+        $scope.additionalMetrage = {
+            length: 0,
+            width: 0
+        };
+    };
+
+    $scope.delMetrage = function (metrage) {
+        $scope.cloth.metrage.splice($scope.cloth.metrage.indexOf(metrage),1);
+    };
+
+    $scope.addTemp = function() {
+        if($scope.temp) { $scope.cloth.metrage.pop(); }
+        else { if($scope.additionalMetrage) { $scope.temp = true; }}
+        
+        if($scope.additionalMetrage) {$scope.cloth.metrage.push($scope.additionalMetrage);}
+        else {$scope.temp = false;}
+    };
+
+    $scope.isTemp = function(i){
+        return i===$scope.cloth.metrage.length-1 && $scope.temp;
+    };
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     $scope.remove = function (id) {
         pouchWrapper.remove(id).then(function(res) {
@@ -236,11 +285,7 @@ main.controller('MainCtrl', ['$scope', 'listener', 'pouchWrapper', '$routeParams
     };
 
     $scope.update = function () {
-        pouchWrapper.update($scope.cloth);// .then(function(res, value) {
-        //     // $scope.cloth.filter(function (doc) {
-        //     //     return doc.id !== res.value.id;
-        //     // }).push(res.value);
-        // });
+        $scope.$emit('updateCloth', $scope.cloth);
     };
 
     $scope.getCloth = function () {
@@ -250,6 +295,7 @@ main.controller('MainCtrl', ['$scope', 'listener', 'pouchWrapper', '$routeParams
     };
 
     $scope.allCloths = function () {
+        $scope.cloths = [];
         pouchWrapper.allCloths().then(function(res, value) {
             for (var i=0;i<res.length;i++){
                 $scope.cloths.push(res[i].value);
@@ -279,6 +325,13 @@ main.controller('MainCtrl', ['$scope', 'listener', 'pouchWrapper', '$routeParams
         event.preventDefault();
         $scope.getNextId();
         pouchWrapper.add(cloth);
+    });
+
+    $scope.$on('updateCloth', function(event, cloth) {
+        console.log('updated');
+        event.preventDefault();
+        $scope.getNextId();
+        pouchWrapper.update(cloth);
     });
 
     $scope.$on('delCloth', function(event, id) {
