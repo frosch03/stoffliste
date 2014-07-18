@@ -32,6 +32,16 @@
                   </button>
                 </td>
               </tr>
+              <tr ng-class="{'input-append':addMetrage};">
+                <td><input type="text" name="width"  ng-model="additionalMetrage.width" class="form-control"></td>
+                <td><input type="text" name="length"  ng-model="additionalMetrage.length" class="form-control" ng-change="addTemp()"></td>
+                <td>
+                  <button class="btn btn-primary btn-mini" ng-click="addMetrage(metrage)" ng-show="additionalMetrage.length">
+                    <i class="btn-small btn-ok glyphicon glyphicon-ok"></i>
+                  </button>
+                  <!-- <input type="submit" class="btn btn-mini btn-primary" ng-click="addMetrage()" ng-show="additionalMetrage.length" value="+ add"/> -->
+                </td>
+              </tr>
             </table>    
             <span ng-class="{'input-append':addMetrage};">
               <input type="text" name="width"  ng-model="additionalMetrage.width" class="form-control"> 
