@@ -88,8 +88,8 @@
       <button class="btn btn-default pull-right glyphicon glyphicon-ok" style="cursor:pointer" ng-click="update(cloth)"></button>
       <form name="metaForm" role="form" class="form-horizontal">
         <div class="form-group">
-          <label for"fabric_id">Stoff</label>
-          <input type="text" name="id" ng-model="cloth.id" placeholder="{{ cloth.id }}" class="form-control">
+          <label for"fabric_id">Stoffnummer:</label>
+          <input type="text" name="id" ng-disabled="true" ng-model="cloth.id" placeholder="{{ cloth.id }}" class="form-control">
         </div>
         <div class="form-group">
           <label for="fabric_metrages">Metrage:</label>
@@ -98,7 +98,9 @@
             <th><label for="fabric_length">Länge:</label></th>
             <th></th>
             <tr ng-repeat="metrage in cloth.metrage"  ng-class="{'muted':isTemp($index)}">
-              <td>{{metrage.width}} m</td>
+              <td>
+                  {{metrage.width}} m
+              </td>
               <td>{{metrage.length}} m</td>
               <td>
                 <button class="btn btn-danger btn-mini" ng-click="delMetrage(metrage)" ng-hide="isTemp($index)">
@@ -108,9 +110,18 @@
             </tr>
             <tr ng-class="{'input-append':addMetrage};">
               <td>
-                <input type="text" name="width"  ng-model="additionalMetrage.width" class="form-control"> [m]</td>
+                <div class="input-group">
+                  <input type="text" name="width"  ng-model="additionalMetrage.width" class="form-control">
+                  <div class="input-group-addon">m</div>
+                </div>
+              </td>
+
               <td>
-                <input type="text" name="length"  ng-model="additionalMetrage.length" class="form-control" ng-change="addTemp()"> [m]</td>
+                <div class="input-group">
+                  <input type="text" name="length"  ng-model="additionalMetrage.length" class="form-control" ng-change="addTemp()">
+                  <div class="input-group-addon">m</div>
+                </div>
+              </td>
               <td>
                 <button class="btn btn-primary btn-mini" ng-click="addMetrage(metrage)" ng-show="additionalMetrage.length">
                   <i class="btn-small btn-ok glyphicon glyphicon-ok"></i>
