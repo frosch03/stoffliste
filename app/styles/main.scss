@@ -6,20 +6,20 @@ $icon-font-path: "/bower_components/bootstrap-sass-official/vendor/assets/fonts/
 @import "../bower_components/bootstrap-sass-official/vendor/assets/stylesheets/bootstrap.scss";
 // endbower
 
-@font-face {
-    font-family: 'danielregular';
-    src: url('../fonts/daniel-webfont.eot');
-    src: url('../fonts/daniel-webfont.eot?#iefix') format('embedded-opentype'),
-         url('../fonts/daniel-webfont.woff') format('woff'),
-         url('../fonts/daniel-webfont.ttf') format('truetype'),
-         url('../fonts/daniel-webfont.svg#danielregular') format('svg');
-    font-weight: normal;
-    font-style: normal;
+// @font-face {
+//     font-family: 'danielregular';
+//     src: url('../fonts/daniel-webfont.eot');
+//     src: url('../fonts/daniel-webfont.eot?#iefix') format('embedded-opentype'),
+//          url('../fonts/daniel-webfont.woff') format('woff'),
+//          url('../fonts/daniel-webfont.ttf') format('truetype'),
+//          url('../fonts/daniel-webfont.svg#danielregular') format('svg');
+//     font-weight: normal;
+//     font-style: normal;
 
-}
+// }
 
 .form-control {
-  font-family: danielregular;
+  // font-family: danielregular;
   // box-shadow: 0px;
   border: 0px;
   background-color: rgba(248, 248, 248, 1);
@@ -37,6 +37,7 @@ $icon-font-path: "/bower_components/bootstrap-sass-official/vendor/assets/fonts/
 body {
     padding-top: 20px;
     padding-bottom: 20px;
+    background-color: rgba(58, 91, 141, 1);
 }
 
 /* Everything but the jumbotron gets side spacing for mobile first views */

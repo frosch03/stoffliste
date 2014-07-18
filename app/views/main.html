@@ -1,9 +1,9 @@
 <div class="header">
-  <ul class="nav nav-pills pull-right" ng-controller="MainCtrl">
-    <li>Neuer Stoff</li>
-    <li class="active"><a ng-click="submit(cloth)">Add</a></li>
-  </ul>
-  <h3 class="text-muted">Stoff Liste - Neuen Stoff anlegen:</h3>
+  <!-- <ul class="nav nav-pills pull-right" ng-controller="MainCtrl"> -->
+  <!--   <li>Neuer Stoff</li> -->
+  <!--   <li class="active"><a ng-click="submit(cloth)">Add</a></li> -->
+  <!-- </ul> -->
+  <h3 class="text-muted">Stoff Liste</h3>
 </div>
 
 
@@ -18,34 +18,54 @@
       <div ng-controller="AddCtrl">
         <div style="background: #FFF">
           <button class="btn btn-default pull-right glyphicon glyphicon-ok" style="cursor:pointer" ng-click="submit(cloth)"></button>
-          <form name="in" role="form" class="form-horizontal">
-            <h1>Stoff</h1>
-            <input type="text" name="id" placeholder="{{ nextId }}" ng-model="cloth.id" class="form-control">
-            <h1>Metrage:</h1>
-            <table class="table table-striped">
-              <tr ng-repeat="metrage in cloth.metrage | filter : search"  ng-class="{'muted':isTemp($index)}">
-                <td>{{metrage.width}}</td>
-                <td>{{metrage.length}}</td>
-                <td>
-                  <button class="btn btn-danger btn-mini" ng-click="delMetrage(metrage)" ng-hide="isTemp($index)">
-                    <i class="btn-small btn-alert glyphicon glyphicon-trash"></i>
-                  </button>
-                </td>
-              </tr>
-              <tr ng-class="{'input-append':addMetrage};">
-                <td><input type="text" name="width"  ng-model="additionalMetrage.width" class="form-control"></td>
-                <td><input type="text" name="length"  ng-model="additionalMetrage.length" class="form-control" ng-change="addTemp()"></td>
-                <td>
-                  <button class="btn btn-primary btn-mini" ng-click="addMetrage(metrage)" ng-show="additionalMetrage.length">
-                    <i class="btn-small btn-ok glyphicon glyphicon-ok"></i>
-                  </button>
-                  <!-- <input type="submit" class="btn btn-mini btn-primary" ng-click="addMetrage()" ng-show="additionalMetrage.length" value="+ add"/> -->
-                </td>
-              </tr>
-            </table>    
-            <h1>Metainfos:</h1>
-            <input type="text" name="color" ng-model="cloth.color" class="form-control">
-            <input type="text" name="ingredients" ng-model="cloth.ingredients" class="form-control">
+          <form name="in" role="form" class="form-inline">
+            <div class="form-group">
+              <label for="fabric_id">Stoffnummer:</label>
+              <input type="text" ng-disabled="true" name="id" ng-model="nextId" class="form-control">
+            </div>
+            <div class="form-group form-inline">
+              <label for="fabric_metrages">Metrage:</label>
+              <table class="table table-striped">
+                <th><label for="fabric_width">Nutzbreite:</label></th>
+                <th><label for="fabric_length">Länge:</label></th>
+                <th></th>
+                <tr ng-repeat="metrage in cloth.metrage | filter : search"  ng-class="{'muted':isTemp($index)}">
+                  <td>{{metrage.width}} m</td>
+                  <td>{{metrage.length}} m</td>
+                  <td>
+                    <button class="btn btn-danger btn-mini" ng-click="delMetrage(metrage)" ng-hide="isTemp($index)">
+                      <i class="btn-small btn-alert glyphicon glyphicon-trash"></i>
+                    </button>
+                  </td>
+                </tr>
+                <tr ng-class="{'input-append':addMetrage};">
+                  <td>
+                    <div class="input-group">
+                      <input type="text" name="width"  ng-model="additionalMetrage.width" class="form-control">
+                      <div class="input-group-addon">m</div>
+                  </div></td>
+                  <td>
+                    <div class="input-group">
+                      <input type="text" name="length"  ng-model="additionalMetrage.length" class="form-control" ng-change="addTemp()">
+                      <div class="input-group-addon">m</div>
+                  </td>
+                  <td>
+                    <button class="btn btn-primary btn-mini" ng-click="addMetrage(metrage)" ng-show="additionalMetrage.length">
+                      <i class="btn-small btn-ok glyphicon glyphicon-ok" ng-show="additionalMetrage.length"></i>
+                    </button>
+                    <!-- <input type="submit" class="btn btn-mini btn-primary" ng-click="addMetrage()" ng-show="additionalMetrage.length" value="+ add"/> -->
+                  </td>
+                </tr>
+              </table>    
+            </div>
+            <div class="form-group">
+              <label for="fabric_color">Farbe:</label>
+              <input type="text" name="color" ng-model="cloth.color" class="form-control">
+              <label for="fabric_ingredients">Stoffzusamensetzung:</label>
+              <input type="text" name="ingredients" ng-model="cloth.ingredients" class="form-control">
+              <label for="fabric_dessin">Dessin:</label>
+              <input type="text" name="dessin" ng-model="cloth.dessin" class="form-control">
+            </div>
           </form>
         </div>
       </div>
@@ -67,33 +87,47 @@
       <button class="btn btn-default pull-right glyphicon glyphicon-remove" style="cursor:pointer" ng-click="remove(cloth.id)"></button>
       <button class="btn btn-default pull-right glyphicon glyphicon-ok" style="cursor:pointer" ng-click="update(cloth)"></button>
       <form name="metaForm" role="form" class="form-horizontal">
-        <h1>Stoff</h1>
-        <input type="text" name="id" ng-model="cloth.id" placeholder="{{ cloth.id }}" class="form-control">
-        <h1>Metrage:</h1>
-        <table class="table table-striped">
-          <tr ng-repeat="metrage in cloth.metrage"  ng-class="{'muted':isTemp($index)}">
-            <td>{{metrage.width}}</td>
-            <td>{{metrage.length}}</td>
-            <td>
-              <button class="btn btn-danger btn-mini" ng-click="delMetrage(metrage)" ng-hide="isTemp($index)">
-                <i class="btn-small btn-alert glyphicon glyphicon-trash"></i>
-              </button>
-            </td>
-          </tr>
-          <tr ng-class="{'input-append':addMetrage};">
-            <td><input type="text" name="width"  ng-model="additionalMetrage.width" class="form-control"></td>
-            <td><input type="text" name="length"  ng-model="additionalMetrage.length" class="form-control" ng-change="addTemp()"></td>
-            <td>
-              <button class="btn btn-primary btn-mini" ng-click="addMetrage(metrage)" ng-show="additionalMetrage.length">
-                <i class="btn-small btn-ok glyphicon glyphicon-ok"></i>
-              </button>
-              <!-- <input type="submit" class="btn btn-mini btn-primary" ng-click="addMetrage()" ng-show="additionalMetrage.length" value="+ add"/> -->
-            </td>
-          </tr>
-        </table>    
-        <h1>Metainfos:</h1>
-        <input type="text" name="color" ng-model="cloth.color" placeholder="{{ cloth.color }}" class="form-control">
-        <input type="text" name="ingredients" ng-model="cloth.ingredients" placeholder="{{ cloth.ingredients }}" class="form-control">
+        <div class="form-group">
+          <label for"fabric_id">Stoff</label>
+          <input type="text" name="id" ng-model="cloth.id" placeholder="{{ cloth.id }}" class="form-control">
+        </div>
+        <div class="form-group">
+          <label for="fabric_metrages">Metrage:</label>
+          <table class="table table-striped">
+            <th><label for="fabric_width">Nutzbreite:</label></th>
+            <th><label for="fabric_length">Länge:</label></th>
+            <th></th>
+            <tr ng-repeat="metrage in cloth.metrage"  ng-class="{'muted':isTemp($index)}">
+              <td>{{metrage.width}} m</td>
+              <td>{{metrage.length}} m</td>
+              <td>
+                <button class="btn btn-danger btn-mini" ng-click="delMetrage(metrage)" ng-hide="isTemp($index)">
+                  <i class="btn-small btn-alert glyphicon glyphicon-trash"></i>
+                </button>
+              </td>
+            </tr>
+            <tr ng-class="{'input-append':addMetrage};">
+              <td>
+                <input type="text" name="width"  ng-model="additionalMetrage.width" class="form-control"> [m]</td>
+              <td>
+                <input type="text" name="length"  ng-model="additionalMetrage.length" class="form-control" ng-change="addTemp()"> [m]</td>
+              <td>
+                <button class="btn btn-primary btn-mini" ng-click="addMetrage(metrage)" ng-show="additionalMetrage.length">
+                  <i class="btn-small btn-ok glyphicon glyphicon-ok"></i>
+                </button>
+                <!-- <input type="submit" class="btn btn-mini btn-primary" ng-click="addMetrage()" ng-show="additionalMetrage.length" value="+ add"/> -->
+              </td>
+            </tr>
+          </table>    
+        </div>
+        <div class="form-group">
+          <label for"fabric_color">Farbe:</label>
+          <input type="text" name="color" ng-model="cloth.color" placeholder="{{ cloth.color }}" class="form-control">
+          <label for="fabric_ingredients">Stoffzusamensetzung:</label>
+          <input type="text" name="ingredients" ng-model="cloth.ingredients" placeholder="{{ cloth.ingredients }}" class="form-control">
+          <label for="fabric_dessin">Dessin:</label>
+          <input type="text" name="dessin" ng-model="cloth.dessin" placeholder="{{ cloth.dessin }}" class="form-control">
+        </div>
       </form>
     </section>
   </accordion-group>

@@ -200,40 +200,6 @@ main.directive('blob', function(){
 
 main.controller('MainCtrl', ['$scope', 'listener', 'pouchWrapper', '$routeParams', function ($scope, listener, pouchWrapper, $routeParams) {
 
-    // $scope.submit = function () {
-    //     pouchWrapper.add($scope.cloth).then(function(res) {
-    //             $scope.cloth = {
-    //                 id: '',
-    //                 width: '',
-    //                 length: '',
-    //                 color: '',
-    //                 ingredients: ''
-    //             };
-    //             $scope.getNextId();
-    //             // if (res && res.ok) {
-    //             //     if (metaForm.attachment.files.length) {
-    //             //         var reader = new FileReader();
-    //             //         reader.onload = (function(file) {
-    //             //             return function(e) {
-    //             //                 console.log('e.target.result: '+e.target.result);
-    //             //                 pouchWrapper.putAttachment(res.id, 'attachment', res.rev, e.target.result, file.type);
-    //             //             };
-    //             //         })(metaForm.attachment.files.item(0));
-    //             //         reader.readAsDataURL(metaForm.attachment.files.item(0));
-    //             //     }
-    //             // }
-    //         }, function(reason) {
-    //             console.log(reason);
-    //         });
-    // };
-
-
-
-
-
-
-
-
     $scope.submit = function () {
         $scope.$emit('addCloth', $scope.cloth);
     };
@@ -262,11 +228,6 @@ main.controller('MainCtrl', ['$scope', 'listener', 'pouchWrapper', '$routeParams
     $scope.isTemp = function(i){
         return i===$scope.cloth.metrage.length-1 && $scope.temp;
     };
-
-
-
-
-
 
 
 
@@ -331,6 +292,7 @@ main.controller('MainCtrl', ['$scope', 'listener', 'pouchWrapper', '$routeParams
     $scope.$on('addCloth', function(event, cloth) {
         event.preventDefault();
         $scope.getNextId();
+        cloth.id = $scope.nextId;
         pouchWrapper.add(cloth);
     });
 
@@ -351,6 +313,7 @@ main.controller('MainCtrl', ['$scope', 'listener', 'pouchWrapper', '$routeParams
 
     $scope.getNextId = function () {
         pouchWrapper.nextId().then(function(nextid, value) {
+            console.log($scope);
             $scope.nextId = nextid;
         });
     };
