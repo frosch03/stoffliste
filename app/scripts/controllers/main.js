@@ -1,4 +1,4 @@
-'use strict';
+ 'use strict';
 
 var main = angular.module('stoffListeApp');
 
@@ -158,6 +158,7 @@ main.factory('listener', ['$rootScope', 'myPouch', function($rootScope, myPouch)
         continuous: true,
         onChange: function(change) {
             if (!change.deleted) {
+                console.log(change);
                 $rootScope.$apply(function() {
                     myPouch.get(change.id, function(err, doc) {
                         $rootScope.$apply(function() {
@@ -318,7 +319,13 @@ main.controller('MainCtrl', ['$scope', 'listener', 'pouchWrapper', '$routeParams
     if (!$routeParams.docId && !$scope.cloths) { $scope.allCloths(); }
 
     $scope.$on('newCloth', function(event, cloth) {
-        $scope.cloths.push(cloth);
+        var isin = false;
+        for(var i=0;i<$scope.cloths.length;i++) {
+            if (cloth.id === $scope.cloths[i].id) {isin = true;}
+        }
+        if (!isin) { 
+            $scope.cloths.push(cloth); 
+        }
     });
 
     $scope.$on('addCloth', function(event, cloth) {
