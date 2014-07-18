@@ -43,11 +43,6 @@
                 </td>
               </tr>
             </table>    
-            <span ng-class="{'input-append':addMetrage};">
-              <input type="text" name="width"  ng-model="additionalMetrage.width" class="form-control"> 
-              <input type="text" name="length"  ng-model="additionalMetrage.length" class="form-control" ng-change="addTemp()">
-              <input type="submit" class="btn btn-primary" ng-click="addMetrage()" ng-show="additionalMetrage.length" value="+ add"/>
-            </span>
             <h1>Metainfos:</h1>
             <input type="text" name="color" ng-model="cloth.color" class="form-control">
             <input type="text" name="ingredients" ng-model="cloth.ingredients" class="form-control">
