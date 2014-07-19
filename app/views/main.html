@@ -24,7 +24,7 @@
                 <div class="col-md-6">
                   <div class="form-group">
                     <label for="fabric_id">Stoffnummer:</label>
-                    <input type="text" name="width"  value=" {{ cloth.type }}{{ nextId }}" class="form-control">
+                    <input type="text" name="width"  value="{{ cloth.type }}{{ nextId }}" class="form-control">
                   </div>
                 </div>
                 <div class="col-md-4">
@@ -76,12 +76,12 @@
                   </div></td>
                   <td>
                     <div class="input-group">
-                      <input type="text" name="length"  ng-model="additionalMetrage.length" class="form-control" ng-change="addTemp()">
+                      <input type="text" name="length"  ng-model="additionalMetrage.uselength" class="form-control" ng-change="addTemp()">
                       <div class="input-group-addon">m</div>
                   </td>
                   <td>
-                      <i class="btn btn-danger fa fa-plus" ng-click="addMetrage(metrage)" ng-show="additionalMetrage.length"></i>
-                    <!-- <input type="submit" class="btn btn-mini btn-primary" ng-click="addMetrage()" ng-show="additionalMetrage.length" value="+ add"/> -->
+                      <i class="btn btn-danger fa fa-plus" ng-click="addMetrage(metrage)" ng-show="additionalMetrage.uselength"></i>
+                    <!-- <input type="submit" class="btn btn-mini btn-primary" ng-click="addMetrage()" ng-show="additionalMetrage.uselength" value="+ add"/> -->
                   </td>
                 </tr>
               </table>    
@@ -150,12 +150,12 @@
 
               <td>
                 <div class="input-group" ng-hide="edit">
-                  <input type="text" name="length"  ng-readonly="edit" ng-model="additionalMetrage.length" class="form-control" ng-change="addTemp()">
+                  <input type="text" name="length"  ng-readonly="edit" ng-model="additionalMetrage.uselength" class="form-control" ng-change="addTemp()">
                   <div class="input-group-addon">m</div>
                 </div>
               </td>
               <td>
-                  <i class="btn btn-danger fa fa-plus" ng-click="addMetrage(metrage)" ng-show="additionalMetrage.length"></i>
+                  <i class="btn btn-danger fa fa-plus" ng-click="addMetrage(metrage)" ng-show="additionalMetrage.uselength"></i>
               </td>
             </tr>
           </table>    
@@ -174,5 +174,5 @@
 </accordion>
 
 <div class="footer">
-  <p><span class="glyphicon glyphicon-heart"></span> from frosch03</p>
+  <p><span class="fa fa-heart"></span> from frosch03</p>
 </div>
