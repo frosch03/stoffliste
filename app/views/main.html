@@ -24,7 +24,7 @@
                 <div class="col-md-6">
                   <div class="form-group">
                     <label for="fabric_id">Stoffnummer:</label>
-                    <input type="text" name="width"  value="{{ cloth.type }}{{ nextId }}" class="form-control">
+		    <input type="text" name="id" ng-disabled="true" value="{{ cloth.type }}{{ nextId }}" class="form-control">
                   </div>
                 </div>
                 <div class="col-md-4">
@@ -57,11 +57,11 @@
               <label for="fabric_metrages">Metrage:</label>
               <table class="table table-striped">
                 <th><label for="fabric_width">Nutzbreite:</label></th>
-                <th><label for="fabric_length">Länge:</label></th>
+                <th><label for="fabric_uselength">Länge:</label></th>
                 <th></th>
                 <tr ng-repeat="metrage in cloth.metrage | filter : search"  ng-class="{'muted':isTemp($index)}">
                   <td>{{metrage.width}} m</td>
-                  <td>{{metrage.length}} m</td>
+                  <td>{{metrage.uselength}} m</td>
                   <td>
                   <i class="fa"
                           ng-class="{'fa-2x fa-trash-o': !isTemp($index)}"
@@ -76,7 +76,7 @@
                   </div></td>
                   <td>
                     <div class="input-group">
-                      <input type="text" name="length"  ng-model="additionalMetrage.uselength" class="form-control" ng-change="addTemp()">
+                      <input type="text" name="uselength"  ng-model="additionalMetrage.uselength" class="form-control" ng-change="addTemp()">
                       <div class="input-group-addon">m</div>
                   </td>
                   <td>
@@ -120,19 +120,19 @@
       <form name="metaForm" role="form" class="form-horizontal">
         <div class="form-group">
           <label for"fabric_id">Stoffnummer:</label>
-          <input type="text" name="id" ng-disabled="true" value="{{ cloth.type }}{{cloth.id}}" class="form-control">
+          <input type="text" name="id" ng-disabled="true" value="{{ cloth.type }}{{ cloth.id }}" class="form-control">
         </div>
         <div class="form-group">
           <label for="fabric_metrages">Metrage:</label>
           <table class="table table-striped">
             <th><label for="fabric_width">Nutzbreite:</label></th>
-            <th><label for="fabric_length">Länge:</label></th>
+            <th><label for="fabric_uselength">Länge:</label></th>
             <th></th>
             <tr ng-repeat="metrage in cloth.metrage"  ng-class="{'muted':isTemp($index)}">
               <td>
                   {{metrage.width}} m
               </td>
-              <td>{{metrage.length}} m</td>
+              <td>{{metrage.uselength}} m</td>
               <td>
                   <i class="fa"
                           ng-class="{'': edit,
@@ -150,7 +150,7 @@
 
               <td>
                 <div class="input-group" ng-hide="edit">
-                  <input type="text" name="length"  ng-readonly="edit" ng-model="additionalMetrage.uselength" class="form-control" ng-change="addTemp()">
+                  <input type="text" name="uselength"  ng-readonly="edit" ng-model="additionalMetrage.uselength" class="form-control" ng-change="addTemp()">
                   <div class="input-group-addon">m</div>
                 </div>
               </td>
