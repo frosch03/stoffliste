@@ -20,8 +20,8 @@ add.controller('AddCtrl', ['$scope', '$rootScope', function ($scope, $rootScope)
     $scope.addMetrage = function () {
         $scope.temp = false;
         $scope.additionalMetrage = {
-            length: 0,
-            width: 0
+            length: '',
+            width: ''
         };
     };
 

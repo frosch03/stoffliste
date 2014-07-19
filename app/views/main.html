@@ -11,13 +11,13 @@
   <accordion-group heading="Neuer Stoff" is-open="$scope.newSopen" >
       <accordion-heading ng-click="toggleSOpen()">
         Neuer Stoff
-        <i class="pull-right glyphicon"
-           ng-class="{'glyphicon-chevron-down': $scope.newSopen,
-                      'glyphicon-chevron-right': !$scope.newSopen}"></i>
+        <i class="pull-right fa"
+           ng-class="{'fa-indent': $scope.newSopen,
+                      'fa-outdent': !$scope.newSopen}"></i>
       </accordion-heading>
       <div ng-controller="AddCtrl">
         <div style="background: #FFF">
-          <button class="btn btn-default pull-right glyphicon glyphicon-ok" style="cursor:pointer" ng-click="submit(cloth)"></button>
+          <i class="btn btn-default fa fa-plus fa-2x" ng-click="submit(cloth)"></i>
           <form name="in" role="form" class="form-inline">
             <div class="container">
               <div class="row">
@@ -63,9 +63,9 @@
                   <td>{{metrage.width}} m</td>
                   <td>{{metrage.length}} m</td>
                   <td>
-                    <button class="btn btn-danger btn-mini" ng-click="delMetrage(metrage)" ng-hide="isTemp($index)">
-                      <i class="btn-small btn-alert glyphicon glyphicon-trash"></i>
-                    </button>
+                  <i class="fa"
+                          ng-class="{'fa-2x fa-trash-o': !isTemp($index)}"
+                          ng-click="delMetrage(metrage)"></i>
                   </td>
                 </tr>
                 <tr ng-class="{'input-append':addMetrage};">
@@ -80,9 +80,7 @@
                       <div class="input-group-addon">m</div>
                   </td>
                   <td>
-                    <button class="btn btn-primary btn-mini" ng-click="addMetrage(metrage)" ng-show="additionalMetrage.length">
-                      <i class="btn-small btn-ok glyphicon glyphicon-ok" ng-show="additionalMetrage.length"></i>
-                    </button>
+                      <i class="btn btn-danger fa fa-plus" ng-click="addMetrage(metrage)" ng-show="additionalMetrage.length"></i>
                     <!-- <input type="submit" class="btn btn-mini btn-primary" ng-click="addMetrage()" ng-show="additionalMetrage.length" value="+ add"/> -->
                   </td>
                 </tr>
@@ -109,13 +107,16 @@
   <accordion-group ng-repeat="cloth in cloths track by $index" heading="{{ cloth.id }}" is-open="$scope.isopen">
     <accordion-heading ng-click="toggleOpen()">
       {{ cloth.type }}{{ cloth.id }} : {{ cloth.color }}, {{ cloth.ingredients }}
-      <i class="pull-right glyphicon"  ng-click="toggleOpen()"
-         ng-class="{'glyphicon-chevron-down': $scope.isopen,
-                   'glyphicon-chevron-right': !$scope.isopen}"></i>
+      <i class="pull-right fa"  ng-click="toggleOpen()"
+         ng-class="{'fa-indent': $scope.isopen,
+                   'fa-outdent': !$scope.isopen}"></i>
     </accordion-heading>
     <section  ng-controller="MainCtrl">
-      <button class="btn btn-default pull-right glyphicon glyphicon-remove" style="cursor:pointer" ng-click="remove(cloth.id)"></button>
-      <button class="btn btn-default pull-right glyphicon glyphicon-ok" style="cursor:pointer" ng-click="update(cloth)"></button>
+      <button class="btn btn-default pull-right fa fa-trash-o fa-2x" ng-show="!edit" ng-click="remove(cloth)"></button>
+      <button class="btn btn-default pull-right fa fa-cloud-upload fa-2x" ng-click="update(cloth)"></button>
+      <button class="btn pull-right fa fa-edit fa-2x" ng-click="toggleEdit()" 
+         ng-class="{'btn-default': edit, 
+                   'btn-danger': !edit}"></button>
       <form name="metaForm" role="form" class="form-horizontal">
         <div class="form-group">
           <label for"fabric_id">Stoffnummer:</label>
@@ -133,41 +134,39 @@
               </td>
               <td>{{metrage.length}} m</td>
               <td>
-                <button class="btn btn-danger btn-mini" ng-click="delMetrage(metrage)" ng-hide="isTemp($index)">
-                  <i class="btn-small btn-alert glyphicon glyphicon-trash"></i>
-                </button>
+                  <i class="fa"
+                          ng-class="{'': edit,
+                                    'fa-2x fa-trash-o': !edit && !isTemp($index)}"
+                          ng-click="delMetrage(metrage)"></i>
               </td>
             </tr>
             <tr ng-class="{'input-append':addMetrage};">
               <td>
-                <div class="input-group">
-                  <input type="text" name="width"  ng-model="additionalMetrage.width" class="form-control">
+                <div class="input-group" ng-hide="edit">
+                  <input type="text" name="width"  ng-readonly="edit" ng-model="additionalMetrage.width" class="form-control">
                   <div class="input-group-addon">m</div>
                 </div>
               </td>
 
               <td>
-                <div class="input-group">
-                  <input type="text" name="length"  ng-model="additionalMetrage.length" class="form-control" ng-change="addTemp()">
+                <div class="input-group" ng-hide="edit">
+                  <input type="text" name="length"  ng-readonly="edit" ng-model="additionalMetrage.length" class="form-control" ng-change="addTemp()">
                   <div class="input-group-addon">m</div>
                 </div>
               </td>
               <td>
-                <button class="btn btn-primary btn-mini" ng-click="addMetrage(metrage)" ng-show="additionalMetrage.length">
-                  <i class="btn-small btn-ok glyphicon glyphicon-ok"></i>
-                </button>
-                <!-- <input type="submit" class="btn btn-mini btn-primary" ng-click="addMetrage()" ng-show="additionalMetrage.length" value="+ add"/> -->
+                  <i class="btn btn-danger fa fa-plus" ng-click="addMetrage(metrage)" ng-show="additionalMetrage.length"></i>
               </td>
             </tr>
           </table>    
         </div>
         <div class="form-group">
           <label for"fabric_color">Farbe:</label>
-          <input type="text" name="color" ng-model="cloth.color" placeholder="{{ cloth.color }}" class="form-control">
+          <input type="text" name="color" ng-readonly="edit" ng-model="cloth.color" placeholder="{{ cloth.color }}" class="form-control">
           <label for="fabric_ingredients">Materialzusammensetzung:</label>
-          <input type="text" name="ingredients" ng-model="cloth.ingredients" placeholder="{{ cloth.ingredients }}" class="form-control">
+          <input type="text" name="ingredients" ng-readonly="edit" ng-model="cloth.ingredients" placeholder="{{ cloth.ingredients }}" class="form-control">
           <label for="fabric_dessin">Dessin:</label>
-          <input type="text" name="dessin" ng-model="cloth.dessin" placeholder="{{ cloth.dessin }}" class="form-control">
+          <input type="text" name="dessin" ng-readonly="edit" ng-model="cloth.dessin" placeholder="{{ cloth.dessin }}" class="form-control">
         </div>
       </form>
     </section>

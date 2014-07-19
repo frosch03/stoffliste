@@ -5,8 +5,8 @@ var main = angular.module('stoffListeApp');
 main.factory('myPouch', [function() {
 
   var mydb = new PouchDB('stoffliste');
-  PouchDB.replicate('stoffliste', 'http://192.168.0.14:5984/stoffliste', {continuous: true});
   PouchDB.replicate('http://192.168.0.14:5984/stoffliste', 'stoffliste', {continuous: true});
+  PouchDB.replicate('stoffliste', 'http://192.168.0.14:5984/stoffliste', {continuous: true});
   return mydb;
 
 }]);
@@ -116,10 +116,8 @@ main.factory('pouchWrapper', ['$q', '$rootScope', '$routeParams', 'myPouch', fun
                 myPouch.putAttachment(rid, name, otherDoc._rev, otherDoc.doc + doc, type, function(err, res) {
                     $rootScope.$apply(function() {
                         if (err) {
-                            console.log('error: ' +err);
                             deferred.reject(err);
                         } else {
-                            console.log('res: ' +res);
                             deferred.resolve(res);
                         }
                     });
@@ -128,23 +126,27 @@ main.factory('pouchWrapper', ['$q', '$rootScope', '$routeParams', 'myPouch', fun
             // myPouch.put(rid, name, rev, doc, type, );
             return deferred.promise;
         },
-        remove: function(id) {
-            var deferred = $q.defer();
-            myPouch.query(function(doc, emit) {
-                if(doc.id === id) { 
+        remove: function(cloth) {
+            var query_fn = function(doc, emit) {
+                if(doc._id === cloth._id) { 
                     emit(doc._id, doc._rev);
                 }
-            }, function (err, doc) {
-                myPouch.remove(doc.rows[0].key, doc.rows[0].value, function(err, res) {
-                    $rootScope.$apply(function() {
-                        if (err) {
-                            deferred.reject(err);
-                        } else {
-                            $rootScope.$broadcast('delCloth', id);
-                            deferred.resolve(res);
-                        }
-                    });
-                });
+            };
+
+            var deferred = $q.defer();
+            myPouch.query(query_fn, function (err, doc) {
+                if (doc) {
+                    myPouch.remove(doc.rows[0].key, doc.rows[0].value, function(err, res) {
+                        $rootScope.$apply(function() {
+                            if (err) {
+                                deferred.reject(err);
+                            } else {
+                                $rootScope.$broadcat('delCloth', cloth);
+                                deferred.resolve(res);
+                            }
+                        });
+                    }); 
+                }
             });
             return deferred.promise;
         }
@@ -158,7 +160,7 @@ main.factory('listener', ['$rootScope', 'myPouch', function($rootScope, myPouch)
         continuous: true,
         onChange: function(change) {
             if (!change.deleted) {
-                console.log(change);
+                console.log('change.id: '+change.id);
                 $rootScope.$apply(function() {
                     myPouch.get(change.id, function(err, doc) {
                         $rootScope.$apply(function() {
@@ -199,6 +201,7 @@ main.directive('blob', function(){
 
 
 main.controller('MainCtrl', ['$scope', 'listener', 'pouchWrapper', '$routeParams', function ($scope, listener, pouchWrapper, $routeParams) {
+    $scope.edit=true;
 
     $scope.submit = function () {
         $scope.$emit('addCloth', $scope.cloth);
@@ -208,8 +211,8 @@ main.controller('MainCtrl', ['$scope', 'listener', 'pouchWrapper', '$routeParams
     $scope.addMetrage = function () {
         $scope.temp = false;
         $scope.additionalMetrage = {
-            length: 0,
-            width: 0
+            length: '',
+            width: ''
         };
     };
 
@@ -237,12 +240,13 @@ main.controller('MainCtrl', ['$scope', 'listener', 'pouchWrapper', '$routeParams
 
 
 
-    $scope.remove = function (id) {
-        pouchWrapper.remove(id).then(function(res) {
-            console.log(res);
+    $scope.remove = function (cloth) {
+        console.log('remove cloth.id: '+cloth.id);
+        pouchWrapper.remove(cloth).then(function(res) {
+            console.log('res: '+res);
             $scope.getNextId();
         }, function(reason) {
-            console.log(reason);
+            console.log('reason: '+reason);
         });
     };
 
@@ -287,37 +291,51 @@ main.controller('MainCtrl', ['$scope', 'listener', 'pouchWrapper', '$routeParams
         if (!isin) { 
             $scope.cloths.push(cloth); 
         }
+        $scope.getNextId();
+        console.log('new: '+cloth.id);
     });
 
     $scope.$on('addCloth', function(event, cloth) {
         event.preventDefault();
         $scope.getNextId();
         cloth.id = $scope.nextId;
-        pouchWrapper.add(cloth);
+        console.log('adding: '+cloth.id);
+        pouchWrapper.add(cloth).then(function (err, res) {
+            if (err) { console.log(err); }
+            else { console.log(res); }
+        });
+        console.log('add: '+cloth);
     });
 
     $scope.$on('updateCloth', function(event, cloth) {
-        console.log('updated');
         event.preventDefault();
         $scope.getNextId();
         pouchWrapper.update(cloth);
+        console.log('updated: '+cloth);
     });
 
-    $scope.$on('delCloth', function(event, id) {
+    $scope.$on('delCloth', function(event, clothid) {
         for (var i = 0; i<$scope.cloths.length; i++) {
-            if ($scope.cloths[i]._id === id) {
+            if ($scope.cloths[i]._id === clothid) {
                 $scope.cloths.splice(i,1);
             }
         }
+        $scope.getNextId();
+        console.log('del: '+clothid);
     });
 
     $scope.getNextId = function () {
-        pouchWrapper.nextId().then(function(nextid, value) {
-            $scope.nextId = nextid.substring(2);
-        });
-    };
+        var size = 4;
+        var max = 0;
+        for(var i = 0; i < $scope.cloths.length; i++) {
+            var id = $scope.cloths[i].id;
+            max = Math.max(parseInt(id.substring(id.length-4)), max); 
+        } 
+        var s = (max+1)+'';
+        while (s.length < size) {s = '0' + s;}
 
-    $scope.getNextId();
+        $scope.nextId = s;
+    };
 
     $scope.toggleSOpen = function () { 
         if ($scope.newSopen) { $scope.newSopen = false; }
@@ -328,5 +346,11 @@ main.controller('MainCtrl', ['$scope', 'listener', 'pouchWrapper', '$routeParams
         console.log('toggle');
         if ($scope.isopen) { $scope.isopen = false; }
         else { $scope.isopen = true; }
+    };
+
+    $scope.toggleEdit = function () { 
+        console.log('toggle edit: '+$scope.edit);
+        if ($scope.edit) { $scope.edit = false; }
+        else { $scope.edit = true; }
     };
 }]);
