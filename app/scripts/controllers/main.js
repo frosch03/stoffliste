@@ -313,8 +313,7 @@ main.controller('MainCtrl', ['$scope', 'listener', 'pouchWrapper', '$routeParams
 
     $scope.getNextId = function () {
         pouchWrapper.nextId().then(function(nextid, value) {
-            console.log($scope);
-            $scope.nextId = nextid;
+            $scope.nextId = nextid.substring(2);
         });
     };
 

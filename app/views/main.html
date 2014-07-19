@@ -19,10 +19,41 @@
         <div style="background: #FFF">
           <button class="btn btn-default pull-right glyphicon glyphicon-ok" style="cursor:pointer" ng-click="submit(cloth)"></button>
           <form name="in" role="form" class="form-inline">
-            <div class="form-group">
-              <label for="fabric_id">Stoffnummer:</label>
-              <input type="text" ng-disabled="true" name="id" ng-model="nextId" class="form-control">
+
+            <div class="container">
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="fabric_id">Stoffnummer:</label>
+                    <input type="text" name="width"  value=" {{ cloth.type }}{{ nextId }}" class="form-control">
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <div class="radio">
+                      <label>
+                        <input type="radio" ng-model="cloth.type" ng-change="getNextId()" name="typeRadio1" value="OS">
+                        Oberstoff
+                      </label>
+                    </div>
+                    <div class="radio">
+                      <label>
+                        <input type="radio" ng-model="cloth.type" ng-change="getNextId()" name="typeRadio2" value="Z">
+                        Zutaten
+                      </label>
+                    </div>
+                    <div class="radio">
+                      <label>
+                        <input type="radio" ng-model="cloth.type" ng-change="getNextId()" name="typeRadio3" value="F">
+                        Futter
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
+
+
             <div class="form-group form-inline">
               <label for="fabric_metrages">Metrage:</label>
               <table class="table table-striped">
@@ -78,7 +109,7 @@
 <accordion close-others="true">
   <accordion-group ng-repeat="cloth in cloths track by $index" heading="{{ cloth.id }}" is-open="$scope.isopen">
     <accordion-heading ng-click="toggleOpen()">
-      {{ cloth.id }} : {{ cloth.color }}, {{ cloth.ingredients }}
+      {{ cloth.type }}{{ cloth.id }} : {{ cloth.color }}, {{ cloth.ingredients }}
       <i class="pull-right glyphicon"  ng-click="toggleOpen()"
          ng-class="{'glyphicon-chevron-down': $scope.isopen,
                    'glyphicon-chevron-right': !$scope.isopen}"></i>
@@ -89,7 +120,7 @@
       <form name="metaForm" role="form" class="form-horizontal">
         <div class="form-group">
           <label for"fabric_id">Stoffnummer:</label>
-          <input type="text" name="id" ng-disabled="true" ng-model="cloth.id" placeholder="{{ cloth.id }}" class="form-control">
+          <input type="text" name="id" ng-disabled="true" value="{{ cloth.type }}{{cloth.id}}" class="form-control">
         </div>
         <div class="form-group">
           <label for="fabric_metrages">Metrage:</label>
