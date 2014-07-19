@@ -211,7 +211,7 @@ main.controller('MainCtrl', ['$scope', 'listener', 'pouchWrapper', '$routeParams
     $scope.addMetrage = function () {
         $scope.temp = false;
         $scope.additionalMetrage = {
-            length: '',
+            uselength: '',
             width: ''
         };
     };
