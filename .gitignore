@@ -6,3 +6,5 @@ app/bower_components
 *~
 *.log
 /list
+#*#
+*#
