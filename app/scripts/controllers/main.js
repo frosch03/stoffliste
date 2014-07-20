@@ -5,8 +5,8 @@ var main = angular.module('stoffListeApp');
 main.factory('myPouch', [function() {
 
   var mydb = new PouchDB('stoffliste');
-  PouchDB.replicate('stoffliste', 'http://frosch03.de:5999/stoffliste', {continuous: true});
-  PouchDB.replicate('http://frosch03.de:5999/stoffliste', 'stoffliste', {continuous: true});
+  PouchDB.replicate('stoffliste', 'http://192.168.0.14:5984/stoffliste', {continuous: true});
+  PouchDB.replicate('http://192.168.0.14:5984/stoffliste', 'stoffliste', {continuous: true});
   return mydb;
 
 }]);
@@ -109,11 +109,11 @@ main.factory('pouchWrapper', ['$q', '$rootScope', '$routeParams', 'myPouch', fun
             });
             return deferred.promise;
         },
-        putAttachment: function(rid, name, rev, doc, type) {
+        putAttachment: function(filename, file, cloth) {
             var deferred = $q.defer();
             
-            myPouch.get(rid, function(err, otherDoc) {
-                myPouch.putAttachment(rid, name, otherDoc._rev, otherDoc.doc + doc, type, function(err, res) {
+            myPouch.get(cloth._id, function(err, otherDoc) {
+                myPouch.putAttachment(otherDoc._id, filename, otherDoc._rev, file, 'image/png', function(err, res) {
                     $rootScope.$apply(function() {
                         if (err) {
                             deferred.reject(err);
@@ -153,6 +153,8 @@ main.factory('pouchWrapper', ['$q', '$rootScope', '$routeParams', 'myPouch', fun
     };
 
 }]);
+
+
 
 main.factory('listener', ['$rootScope', 'myPouch', function($rootScope, myPouch) {
 
