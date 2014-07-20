@@ -118,12 +118,19 @@
               </table>    
             </div>
             <div class="form-group">
-              <label name="fabric_color">Farbe:</label>
-              <input type="text" name="color" ng-model="cloth.color" class="form-control">
-              <label name="fabric_ingredients">Materialzusammensetzung:</label>
-              <input type="text" name="ingredients" ng-model="cloth.ingredients" class="form-control">
-              <label name="fabric_dessin">Dessin:</label>
-              <input type="text" name="dessin" ng-model="cloth.dessin" class="form-control">
+              <label name="fabric_color">Farbe:
+              <input type="text" name="color" ng-model="cloth.color" class="form-control"></label>
+              <label name="fabric_ingredients">Materialzusammensetzung:
+              <input type="text" name="ingredients" ng-model="cloth.ingredients" class="form-control"></label>
+              <label name="fabric_dessin">Dessin:
+              <input type="text" name="dessin" ng-model="cloth.dessin" class="form-control"></label>
+              <tags-input ng-model="cloth.tags" ng-readonly="edit" class="bootstrap"
+                          placeholder="Sonst noch was?"
+                          replace-spaces-with-dashes="false">
+                <auto-complete source="getTags($query)" min-length="0"
+                               debounce-delay="0"
+                               max-results="10"></auto-complete>
+              </tags-input>
             </div>
           </form>
         </div>
