@@ -1,5 +1,5 @@
 <div class="header">
-  <nav class="navbar navbar-default" role="navigation">
+  <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
     <div class="container-fluid">
       <!-- Brand and toggle get grouped for better mobile display -->
       <div class="navbar-header">
@@ -9,7 +9,7 @@
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
         </button>
-        <a href="#" class="navbar-brand" href="#">[Stoff]</a>
+        <a href="#" class="navbar-brand" href="#">Stofflis.de</a>
       </div>
 
         <form class="navbar-form navbar-left" role="search">
@@ -21,7 +21,7 @@
 
       <!-- Collect the nav links, forms, and other content for toggling -->
       <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-        <ul class="nav navbar-nav">
+        <ul class="nav navbar-nav pull-right">
           <li ng-class="{'active': (predicate==='id')}"><a class="fa"  ng-click="predicate='id'; reverse=!reverse"
                  ng-class="{'active': (predicate==='id'),
                            'fa-sort-asc active': (predicate==='id') && reverse,
@@ -38,7 +38,7 @@
                  ng-class="{'active': (predicate==='ingredients'),
                            'fa-sort-asc active': (predicate==='ingredients') && reverse,
                            'fa-sort-desc active': (predicate==='ingredients') && !reverse,
-                           'fa-sort': !(predicate==='ingredients')}">Zusammensetzung</a>
+                           'fa-sort': !(predicate==='ingredients')}">Materialzusammensetzung</a>
           </li>
         </ul>
       </div><!-- /.navbar-collapse -->
@@ -63,41 +63,32 @@
               <div class="row">
                 <div class="col-md-6">
                   <div class="form-group">
-                    <label for="fabric_id">Stoffnummer:</label>
-		    <input type="text" name="id" ng-disabled="true" value="{{ cloth.type }}{{ nextId }}" class="form-control">
+                    <label name="fabric_id">Stoffnummer:</label>
+		                <input type="text" name="id" ng-disabled="true" value="{{ cloth.type }}{{ nextId }}" class="form-control">
                   </div>
                 </div>
-                <div class="col-md-4">
-                  <div class="form-group">
-                    <div class="radio">
-                      <label>
-                        <input type="radio" ng-model="cloth.type" ng-change="getNextId()" name="typeRadio1" value="OS">
-                        Oberstoff
-                      </label>
-                    </div>
-                    <div class="radio">
-                      <label>
-                        <input type="radio" ng-model="cloth.type" ng-change="getNextId()" name="typeRadio2" value="Z">
-                        Zutaten
-                      </label>
-                    </div>
-                    <div class="radio">
-                      <label>
-                        <input type="radio" ng-model="cloth.type" ng-change="getNextId()" name="typeRadio3" value="F">
-                        Futter
-                      </label>
-                    </div>
-                  </div>
-                </div>
+
+                <div class="input-group" ng-hide="!edit">
+                  <span class="input-group-addon">
+                    <label class="radio-inline">
+                      <input type="radio" ng-model="cloth.type" ng-change="getNextId()" name="typeRadio1" value="OS"> Oberstoff</label>
+                    <label class="radio-inline">
+                      <input type="radio" ng-model="cloth.type" ng-change="getNextId()" name="typeRadio2" value="Z"> Zutaten</label>
+                    <label class="radio-inline">
+                      <input type="radio" ng-model="cloth.type" ng-change="getNextId()" name="typeRadio3" value="F"> Futter</label>
+                  </span>
+                </div><!-- /input-group -->
+
+
               </div>
             </div>
 
 
             <div class="form-group form-inline">
-              <label for="fabric_metrages">Metrage:</label>
+              <label name="fabric_metrages">Metrage:</label>
               <table class="table table-striped">
-                <th><label for="fabric_width">Nutzbreite:</label></th>
-                <th><label for="fabric_uselength">Länge:</label></th>
+                <th><label name="fabric_width">Nutzbreite:</label></th>
+                <th><label name="fabric_uselength">Länge:</label></th>
                 <th></th>
                 <tr ng-repeat="metrage in cloth.metrage"  ng-class="{'muted':isTemp($index)}">
                   <td>{{metrage.width}} m</td>
@@ -127,11 +118,11 @@
               </table>    
             </div>
             <div class="form-group">
-              <label for="fabric_color">Farbe:</label>
+              <label name="fabric_color">Farbe:</label>
               <input type="text" name="color" ng-model="cloth.color" class="form-control">
-              <label for="fabric_ingredients">Materialzusammensetzung:</label>
+              <label name="fabric_ingredients">Materialzusammensetzung:</label>
               <input type="text" name="ingredients" ng-model="cloth.ingredients" class="form-control">
-              <label for="fabric_dessin">Dessin:</label>
+              <label name="fabric_dessin">Dessin:</label>
               <input type="text" name="dessin" ng-model="cloth.dessin" class="form-control">
             </div>
           </form>
@@ -149,60 +140,79 @@
                    'fa-plus-square-o': !$scope.isopen}"></i>
     </accordion-heading>
     <section  ng-controller="MainCtrl">
-      <button class="btn btn-default pull-right fa fa-trash-o fa-2x" ng-show="!edit" ng-click="remove(cloth)"></button>
-      <button class="btn btn-default pull-right fa fa-cloud-upload fa-2x" ng-click="update(cloth)"></button>
-      <button class="btn pull-right fa fa-edit fa-2x" ng-click="toggleEdit()" 
-         ng-class="{'btn-default': edit, 
-                   'btn-danger': !edit}"></button>
       <form name="metaForm" role="form" class="form-horizontal">
         <div class="form-group">
-          <label for"fabric_id">Stoffnummer:</label>
-          <input type="text" name="id" ng-disabled="true" value="{{ cloth.type }}{{ cloth.id }}" class="form-control">
-        </div>
-        <div class="form-group">
-          <label for="fabric_metrages">Metrage:</label>
-          <table class="table table-striped">
-            <th><label for="fabric_width">Nutzbreite:</label></th>
-            <th><label for="fabric_uselength">Länge:</label></th>
-            <th></th>
-            <tr ng-repeat="metrage in cloth.metrage"  ng-class="{'muted':isTemp($index)}">
-              <td>
-                  {{metrage.width}} m
-              </td>
-              <td>{{metrage.uselength}} m</td>
-              <td>
-                  <i class="fa"
-                          ng-class="{'': edit,
-                                    'fa-2x fa-trash-o': !edit && !isTemp($index)}"
-                          ng-click="delMetrage(metrage)"></i>
-              </td>
-            </tr>
-            <tr ng-class="{'input-append':addMetrage};">
-              <td>
-                <div class="input-group" ng-hide="edit">
-                  <input type="text" name="width"  ng-readonly="edit" ng-model="additionalMetrage.width" class="form-control">
-                  <div class="input-group-addon">m</div>
-                </div>
-              </td>
+          <div class="col-lg-4">
+            <label name"fabric_id">Stoffnummer:</label>
+            <input type="text" name="id" ng-disabled="true" value="{{ cloth.type }}{{ cloth.id }}" class="form-control">
+          </div>
+          <div class="col-lg-4">
+          </div><!-- /.col-lg-6 -->
+          <div class="col-lg-4"> 
+            <button class="btn btn-default pull-right fa fa-trash-o fa-2x" ng-show="!edit" ng-click="remove(cloth)"></button>
+            <button class="btn btn-default pull-right fa fa-cloud-upload fa-2x" ng-click="update(cloth)"></button>
+            <button class="btn pull-right fa fa-edit fa-2x" ng-click="toggleEdit()" 
+                    ng-class="{'btn-default': edit, 
+                              'btn-danger': !edit}"></button>
 
-              <td>
-                <div class="input-group" ng-hide="edit">
-                  <input type="text" name="uselength"  ng-readonly="edit" ng-model="additionalMetrage.uselength" class="form-control" ng-change="addTemp()">
-                  <div class="input-group-addon">m</div>
-                </div>
-              </td>
-              <td>
-                  <i class="btn btn-danger fa fa-plus" ng-click="addMetrage(metrage)" ng-show="additionalMetrage.uselength"></i>
-              </td>
-            </tr>
+          </div>
+        </div>
+      </form>
+      <div class="input-group" ng-hide="edit">
+        <span class="input-group-addon">
+          <label class="radio-inline">
+            <input type="radio" ng-model="cloth.type" ng-change="getNextId()" name="typeRadio1" value="OS"> Oberstoff</label>
+          <label class="radio-inline">
+            <input type="radio" ng-model="cloth.type" ng-change="getNextId()" name="typeRadio2" value="Z"> Zutaten</label>
+          <label class="radio-inline">
+            <input type="radio" ng-model="cloth.type" ng-change="getNextId()" name="typeRadio3" value="F"> Futter</label>
+        </span>
+      </div><!-- /input-group -->
+
+      <div class="form-group">
+        <label name="fabric_metrages">Metrage:</label>
+        <table class="table table-striped">
+          <th><label name="fabric_width">Nutzbreite:</label></th>
+          <th><label name="fabric_uselength">Länge:</label></th>
+          <th></th>
+          <tr ng-repeat="metrage in cloth.metrage"  ng-class="{'muted':isTemp($index)}">
+            <td>
+              {{metrage.width}} m
+            </td>
+            <td>{{metrage.uselength}} m</td>
+            <td>
+              <i class="fa"
+                 ng-class="{'': edit,
+                           'fa-2x fa-trash-o': !edit && !isTemp($index)}"
+                 ng-click="delMetrage(metrage)"></i>
+            </td>
+          </tr>
+          <tr ng-class="{'input-append':addMetrage};">
+            <td>
+              <div class="input-group" ng-hide="edit">
+                <input type="text" name="width"  ng-readonly="edit" ng-model="additionalMetrage.width" class="form-control">
+                <div class="input-group-addon">m</div>
+              </div>
+            </td>
+
+            <td>
+              <div class="input-group" ng-hide="edit">
+                <input type="text" name="uselength"  ng-readonly="edit" ng-model="additionalMetrage.uselength" class="form-control" ng-change="addTemp()">
+                <div class="input-group-addon">m</div>
+              </div>
+            </td>
+            <td>
+              <i class="btn btn-danger fa fa-plus" ng-click="addMetrage(metrage)" ng-show="additionalMetrage.uselength"></i>
+            </td>
+          </tr>
           </table>    
         </div>
         <div class="form-group">
-          <label for"fabric_color">Farbe:</label>
+          <label name"fabric_color">Farbe:</label>
           <input type="text" name="color" ng-readonly="edit" ng-model="cloth.color" placeholder="{{ cloth.color }}" class="form-control">
-          <label for="fabric_ingredients">Materialzusammensetzung:</label>
+          <label name="fabric_ingredients">Materialzusammensetzung:</label>
           <input type="text" name="ingredients" ng-readonly="edit" ng-model="cloth.ingredients" placeholder="{{ cloth.ingredients }}" class="form-control">
-          <label for="fabric_dessin">Dessin:</label>
+          <label name="fabric_dessin">Dessin:</label>
           <input type="text" name="dessin" ng-readonly="edit" ng-model="cloth.dessin" placeholder="{{ cloth.dessin }}" class="form-control">
         </div>
       </form>
