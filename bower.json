@@ -16,7 +16,8 @@
     "CornerCouch": "*",
     "ng-flow": "~2",
     "pouchdb": "~2.2.3",
-    "jasny-bootstrap": "*"
+    "jasny-bootstrap": "*",
+    "ng-tags-input": "*"
   },
   "devDependencies": {
     "angular-mocks": "1.2.15",

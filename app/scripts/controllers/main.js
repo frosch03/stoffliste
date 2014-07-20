@@ -63,6 +63,28 @@ main.factory('pouchWrapper', ['$q', '$rootScope', '$routeParams', 'myPouch', fun
             });
             return deferred.promise;
         },
+        allTags: function() {
+            var map = function(doc) {
+                if(doc.tags) {
+                    for(var i=0; i<doc.tags.length; i++) {
+                        emit(doc.tags[i].text,1);
+                    }
+                }
+            };
+            var deferred = $q.defer();
+            myPouch.query({map: map}, function(err, doc) {
+                if (err) {
+                    deferred.reject(err);
+                } else {
+                    var tags = [];
+                    for(var i=0; i<doc.rows.length; i++) {
+                        tags.push({text: doc.rows[i].key});
+                    }
+                    deferred.resolve(tags);
+                }
+            });
+            return deferred.promise;
+        },
         allCloths: function() {
             var map = function(doc, emit) {
                 if(doc.id) { 
@@ -205,6 +227,7 @@ main.directive('blob', function(){
 main.controller('MainCtrl', ['$scope', 'listener', 'pouchWrapper', '$routeParams', function ($scope, listener, pouchWrapper, $routeParams) {
     $scope.edit=true;
     $scope.predicate = 'id';
+    $scope.tags = [];
 
     $scope.submit = function () {
         $scope.$emit('addCloth', $scope.cloth);
@@ -355,5 +378,9 @@ main.controller('MainCtrl', ['$scope', 'listener', 'pouchWrapper', '$routeParams
         console.log('toggle edit: '+$scope.edit);
         if ($scope.edit) { $scope.edit = false; }
         else { $scope.edit = true; }
+    };
+
+    $scope.getTags = function (query) {
+        return pouchWrapper.allTags();
     };
 }]);

@@ -7,7 +7,8 @@ angular
     'ngSanitize',
     'ngRoute',
     'ui.bootstrap',
-    'flow'
+    'flow',
+    'ngTagsInput'
   ]).config(function ($routeProvider) {
     $routeProvider
       .when('/', {

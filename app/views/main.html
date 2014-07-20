@@ -3,24 +3,22 @@
     <div class="container-fluid">
       <!-- Brand and toggle get grouped for better mobile display -->
       <div class="navbar-header">
-        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-          <span class="sr-only">Toggle navigation</span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-        </button>
-        <a href="#" class="navbar-brand" href="#">Stofflis.de</a>
-      </div>
+         <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+           <span class="sr-only">Toggle navigation</span>
+           <span class="icon-bar"></span>
+           <span class="icon-bar"></span>
+           <span class="icon-bar"></span>
+         </button>
+         <a href="#" class="navbar-brand">Stofflis.de</a>
+       </div>
 
+      <!-- Collect the nav links, forms, and other content for toggling -->
+      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
         <form class="navbar-form navbar-left" role="search">
           <div class="form-group">
             <input type="text" class="form-control" ng-model="searchText" placeholder="Search">
           </div>
         </form>
-
-
-      <!-- Collect the nav links, forms, and other content for toggling -->
-      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
         <ul class="nav navbar-nav pull-right">
           <li ng-class="{'active': (predicate==='id')}"><a class="fa"  ng-click="predicate='id'; reverse=!reverse"
                  ng-class="{'active': (predicate==='id'),
@@ -44,6 +42,8 @@
       </div><!-- /.navbar-collapse -->
     </div><!-- /.container-fluid -->
   </nav>
+</div>
+<div style="margin-bottom: 3em;">
 </div>
 
 
@@ -134,6 +134,10 @@
 <accordion close-others="true">
   <accordion-group ng-repeat="cloth in cloths | orderBy:predicate:reverse | filter : searchText track by $index" heading="{{ cloth.id }}" is-open="$scope.isopen">
     <accordion-heading ng-click="toggleOpen()">
+      <i class="fa"
+         ng-class="{'fa-star frog-yellow': cloth.favorit,
+                   'fa-star-o': !cloth.favorit}"></i>
+
       {{ cloth.type }}{{ cloth.id }} : {{ cloth.color }}, {{ cloth.ingredients }}
       <i class="pull-right fa"  ng-click="toggleOpen()"
          ng-class="{'fa-minus-square-o': $scope.isopen,
@@ -147,6 +151,9 @@
             <input type="text" name="id" ng-disabled="true" value="{{ cloth.type }}{{ cloth.id }}" class="form-control">
           </div>
           <div class="col-lg-4">
+            <i class="fa fa-2x"  style=".frog-yellow { color: yellow; }" ng-hide="edit" ng-click="cloth.favorit=!(cloth.favorit)"
+               ng-class="{'fa-star frog-yellow': cloth.favorit,
+                         'fa-star-o': !cloth.favorit}"></i>
           </div><!-- /.col-lg-6 -->
           <div class="col-lg-4"> 
             <button class="btn btn-default pull-right fa fa-trash-o fa-2x" ng-show="!edit" ng-click="remove(cloth)"></button>
@@ -214,6 +221,14 @@
           <input type="text" name="ingredients" ng-readonly="edit" ng-model="cloth.ingredients" placeholder="{{ cloth.ingredients }}" class="form-control">
           <label name="fabric_dessin">Dessin:</label>
           <input type="text" name="dessin" ng-readonly="edit" ng-model="cloth.dessin" placeholder="{{ cloth.dessin }}" class="form-control">
+          <label name="fabric_dessin">Sonstiges:</label>
+          <tags-input ng-model="cloth.tags" ng-readonly="edit" class="bootstrap"
+                placeholder="Sonst noch was?"
+                replace-spaces-with-dashes="false">
+            <auto-complete source="getTags($query)" min-length="0"
+                     debounce-delay="0"
+                     max-results="10"></auto-complete>
+          </tags-input>
         </div>
       </form>
     </section>
