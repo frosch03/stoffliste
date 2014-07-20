@@ -1,19 +1,59 @@
 <div class="header">
-  <!-- <ul class="nav nav-pills pull-right" ng-controller="MainCtrl"> -->
-  <!--   <li>Neuer Stoff</li> -->
-  <!--   <li class="active"><a ng-click="submit(cloth)">Add</a></li> -->
-  <!-- </ul> -->
-  <h3 class="text-muted">Stoff Liste</h3>
+  <nav class="navbar navbar-default" role="navigation">
+    <div class="container-fluid">
+      <!-- Brand and toggle get grouped for better mobile display -->
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a href="#" class="navbar-brand" href="#">[Stoff]</a>
+      </div>
+
+        <form class="navbar-form navbar-left" role="search">
+          <div class="form-group">
+            <input type="text" class="form-control" ng-model="searchText" placeholder="Search">
+          </div>
+        </form>
+
+
+      <!-- Collect the nav links, forms, and other content for toggling -->
+      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+        <ul class="nav navbar-nav">
+          <li ng-class="{'active': (predicate==='id')}"><a class="fa"  ng-click="predicate='id'; reverse=!reverse"
+                 ng-class="{'active': (predicate==='id'),
+                           'fa-sort-asc active': (predicate==='id') && reverse,
+                           'fa-sort-desc active': (predicate==='id') && !reverse,
+                           'fa-sort': !(predicate==='id')}">Nummer</a>
+          </li>
+          <li ng-class="{'active': (predicate==='color')}"><a class="fa"  ng-click="predicate='color'; reverse=!reverse"
+                 ng-class="{'active': (predicate==='color'),
+                           'fa-sort-asc active': (predicate==='color') && reverse,
+                           'fa-sort-desc active': (predicate==='color') && !reverse,
+                           'fa-sort': !(predicate==='color')}">Farbe</a>
+          </li>
+          <li ng-class="{'active': (predicate==='ingredients')}"><a class="fa"  ng-click="predicate='ingredients'; reverse=!reverse"
+                 ng-class="{'active': (predicate==='ingredients'),
+                           'fa-sort-asc active': (predicate==='ingredients') && reverse,
+                           'fa-sort-desc active': (predicate==='ingredients') && !reverse,
+                           'fa-sort': !(predicate==='ingredients')}">Zusammensetzung</a>
+          </li>
+        </ul>
+      </div><!-- /.navbar-collapse -->
+    </div><!-- /.container-fluid -->
+  </nav>
 </div>
 
 
 <accordion close-others="true">
   <accordion-group heading="Neuer Stoff" is-open="$scope.newSopen" >
       <accordion-heading ng-click="toggleSOpen()">
-        Neuer Stoff
+        Stoff hinzufügen
         <i class="pull-right fa"
-           ng-class="{'fa-indent': $scope.newSopen,
-                      'fa-outdent': !$scope.newSopen}"></i>
+           ng-class="{'fa-minus-square-o': $scope.newSopen,
+                      'fa-plus-square-o': !$scope.newSopen}"></i>
       </accordion-heading>
       <div ng-controller="AddCtrl">
         <div style="background: #FFF">
@@ -59,7 +99,7 @@
                 <th><label for="fabric_width">Nutzbreite:</label></th>
                 <th><label for="fabric_uselength">Länge:</label></th>
                 <th></th>
-                <tr ng-repeat="metrage in cloth.metrage | filter : search"  ng-class="{'muted':isTemp($index)}">
+                <tr ng-repeat="metrage in cloth.metrage"  ng-class="{'muted':isTemp($index)}">
                   <td>{{metrage.width}} m</td>
                   <td>{{metrage.uselength}} m</td>
                   <td>
@@ -100,16 +140,13 @@
   </accordion-group>
 </accordion>
 
-
-
-
 <accordion close-others="true">
-  <accordion-group ng-repeat="cloth in cloths track by $index" heading="{{ cloth.id }}" is-open="$scope.isopen">
+  <accordion-group ng-repeat="cloth in cloths | orderBy:predicate:reverse | filter : searchText track by $index" heading="{{ cloth.id }}" is-open="$scope.isopen">
     <accordion-heading ng-click="toggleOpen()">
       {{ cloth.type }}{{ cloth.id }} : {{ cloth.color }}, {{ cloth.ingredients }}
       <i class="pull-right fa"  ng-click="toggleOpen()"
-         ng-class="{'fa-indent': $scope.isopen,
-                   'fa-outdent': !$scope.isopen}"></i>
+         ng-class="{'fa-minus-square-o': $scope.isopen,
+                   'fa-plus-square-o': !$scope.isopen}"></i>
     </accordion-heading>
     <section  ng-controller="MainCtrl">
       <button class="btn btn-default pull-right fa fa-trash-o fa-2x" ng-show="!edit" ng-click="remove(cloth)"></button>
