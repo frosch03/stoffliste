@@ -13,7 +13,7 @@ Install
 
 Clone the github repository and change working directory into:
 
-    git clone http://github.com/frosch03/stoffliste.git
+    git clone https://github.com/frosch03/stoffliste.git
     cd stoffliste
     
 Edit app/scripts/controllers/main.js and change the couchdb-server to
