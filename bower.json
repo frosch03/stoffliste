@@ -15,7 +15,8 @@
     "angular-bootstrap": "*",
     "CornerCouch": "*",
     "ng-flow": "~2",
-    "pouchdb": "~2.2.3"
+    "pouchdb": "~2.2.3",
+    "jasny-bootstrap": "*"
   },
   "devDependencies": {
     "angular-mocks": "1.2.15",
