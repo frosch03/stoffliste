@@ -23,3 +23,9 @@ replication. Afterwards go on with:
     npm install
     bower install
     grunt serve
+
+
+Demo
+----------
+
+If you would like to see a demo, have a look here: [Demo](http://stofflis.frosch03.de/)
