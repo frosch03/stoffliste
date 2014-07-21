@@ -38,6 +38,10 @@
                            'fa-sort-desc active': (predicate==='ingredients') && !reverse,
                            'fa-sort': !(predicate==='ingredients')}">Materialzusammensetzung</a>
           </li>
+          <li ng-class="{'active': (predicate==='favorit')}"><a class="fa"  ng-click="predicate='favorit'"
+                 ng-class="{'active': (predicate==='favorit'),
+                           '': !(predicate==='ingredients')}">Favoriten</a> 
+          </li>
         </ul>
       </div><!-- /.navbar-collapse -->
     </div><!-- /.container-fluid -->
@@ -227,13 +231,13 @@
           <input type="text" name="ingredients" ng-readonly="edit" ng-model="cloth.ingredients" placeholder="{{ cloth.ingredients }}" class="form-control">
           <label name="fabric_dessin">Dessin:</label>
           <input type="text" name="dessin" ng-readonly="edit" ng-model="cloth.dessin" placeholder="{{ cloth.dessin }}" class="form-control">
-          <label name="fabric_dessin">Sonstiges:</label>
-          <tags-input ng-model="cloth.tags" ng-readonly="edit" class="bootstrap"
-                placeholder="Sonst noch was?"
-                replace-spaces-with-dashes="false">
-            <auto-complete source="getTags($query)" min-length="0"
-                     debounce-delay="0"
-                     max-results="10"></auto-complete>
+          <label name="fabric_dessin">Sonstiges:
+            <span ng-hide="!edit" ng-repeat="tag in cloth.tags">
+              <span class="btn btn-primary btn-sm">{{tag.text}}</span>
+            </span>
+          </label>
+          <tags-input ng-model="cloth.tags" ng-hide="edit" class="bootstrap" placeholder="Sonst noch was?" replace-spaces-with-dashes="false">
+            <auto-complete source="getTags($query)" min-length="0" debounce-delay="0" max-results="10"></auto-complete>
           </tags-input>
         </div>
       </form>
