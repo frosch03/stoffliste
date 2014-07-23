@@ -148,6 +148,7 @@
          ng-class="{'fa-star frog-yellow': cloth.favorit,
                    'fa-star-o': !cloth.favorit}"></i>
 
+      <img class="fabricIcon" ng-src="http://localhost:5984/sdbtest/{{cloth._id}}/fabricImage.png">
       {{ cloth.type }}{{ cloth.id }} : {{ cloth.color }}, {{ cloth.ingredients }}
       <i class="pull-right fa"  ng-click="toggleOpen()"
          ng-class="{'fa-minus-square-o': $scope.isopen,
@@ -166,6 +167,7 @@
                          'fa-star-o': !cloth.favorit}"></i>
           </div><!-- /.col-lg-6 -->
           <div class="col-lg-4"> 
+            <img class="fabricImage" ng-src="http://localhost:5984/sdbtest/{{cloth._id}}/fabricImage.png">
             <button class="btn btn-default pull-right fa fa-trash-o fa-2x" ng-show="!edit" ng-click="remove(cloth)"></button>
             <button class="btn btn-default pull-right fa fa-cloud-upload fa-2x" ng-click="update(cloth)"></button>
             <button class="btn pull-right fa fa-edit fa-2x" ng-click="toggleEdit()" 
@@ -175,6 +177,28 @@
           </div>
         </div>
       </form>
+
+
+      <div ng-show="!edit" flow-init="{singleFile:true}"
+           flow-file-added="uploadFabricImage(cloth, $file)">
+        <h3>
+          <a name="image-example" class="anchor" href="#image-example"><span class="octicon octicon-link"></span></a>Single Image upload</h3>
+        <div class="thumbnail" ng-show="!$flow.files.length">
+          <img src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&text=no+image" />
+        </div>
+        <div class="thumbnail" ng-show="$flow.files.length">
+          <img flow-img="$flow.files[0]" />
+        </div>
+        <div>
+          <span class="btn btn-primary" ng-show="!$flow.files.length" flow-btn>Select image</span>
+          <span class="btn btn-info" ng-show="$flow.files.length" flow-btn>Change</span>
+          <span class="btn btn-danger" ng-show="$flow.files.length"
+                ng-click="$flow.cancel()">
+            Remove
+          </span>
+        </div>
+      </div>
+
       <div class="input-group" ng-hide="edit">
         <span class="input-group-addon">
           <label class="radio-inline">

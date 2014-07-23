@@ -4,9 +4,11 @@ var main = angular.module('stoffListeApp');
 
 main.factory('myPouch', [function() {
 
-  var mydb = new PouchDB('stoffliste');
-  PouchDB.replicate('stoffliste', 'http://192.168.0.14:5984/stoffliste', {continuous: true});
-  PouchDB.replicate('http://192.168.0.14:5984/stoffliste', 'stoffliste', {continuous: true});
+  var mydb = new PouchDB('sdbtest');
+  // PouchDB.replicate('stoffliste', 'http://192.168.0.14:5984/stoffliste', {continuous: true});
+  // PouchDB.replicate('http://192.168.0.14:5984/stoffliste', 'stoffliste', {continuous: true});
+  PouchDB.replicate('sdbtest', 'http://localhost:5984/sdbtest', {continuous: true});
+  PouchDB.replicate('http://localhost:5984/sdbtest', 'sdbtest', {continuous: true});
   return mydb;
 
 }]);
@@ -135,11 +137,33 @@ main.factory('pouchWrapper', ['$q', '$rootScope', '$routeParams', 'myPouch', fun
             var deferred = $q.defer();
             
             myPouch.get(cloth._id, function(err, otherDoc) {
-                myPouch.putAttachment(otherDoc._id, filename, otherDoc._rev, file, 'image/png', function(err, res) {
+                console.log('filename: '+filename);
+                myPouch.putAttachment(otherDoc._id, filename, otherDoc._rev, file.file, 'image/png', function(err, res) {
                     $rootScope.$apply(function() {
                         if (err) {
+                            console.log(err);
                             deferred.reject(err);
                         } else {
+                            console.log(res);
+                            deferred.resolve(res);
+                        }
+                    });
+                });
+            });
+            // myPouch.put(rid, name, rev, doc, type, );
+            return deferred.promise;
+        },
+        putFabricImage: function(file, cloth) {
+            var deferred = $q.defer();
+            
+            myPouch.get(cloth._id, function(err, otherDoc) {
+                myPouch.putAttachment(otherDoc._id, 'fabricImage.png', otherDoc._rev, file.file, 'image/png', function(err, res) {
+                    $rootScope.$apply(function() {
+                        if (err) {
+                            console.log(err);
+                            deferred.reject(err);
+                        } else {
+                            console.log(res);
                             deferred.resolve(res);
                         }
                     });
@@ -349,6 +373,19 @@ main.controller('MainCtrl', ['$scope', 'listener', 'pouchWrapper', '$routeParams
         $scope.getNextId();
         console.log('del: '+clothid);
     });
+
+    // $scope.$on('flow::fileAdded', function (event, $flow, flowFile) {
+    //     event.preventDefault();//prevent file from uploading
+    // });
+
+
+    $scope.uploadFabricImage = function (cloth, file) {
+      pouchWrapper.putFabricImage(file, cloth).then(function (res, err) {
+          console.log('ready');
+          if (res) {console.log(res);}
+          else {console.log(err);}
+      });
+    };
 
     $scope.getNextId = function () {
         var size = 4;

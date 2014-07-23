@@ -30,6 +30,22 @@ $icon-font-path: "/bower_components/bootstrap-sass-official/vendor/assets/fonts/
   color: rgb(255, 224, 0);
 }            
 
+.fabricIcon {
+  width: 30px;
+  height: 30px;                
+  border: 2px;
+  border-style: dotted;
+  border-color: #3a5b8d;
+}
+
+.fabricImage {
+  border: 3px;
+  border-style: dashed;
+  border-color: #3a5b8d;
+  width: 40%;
+  height: 40%;
+}
+
 .browsehappy {
     margin: 0.2em 0;
     background: #ccc;
