@@ -22,6 +22,7 @@ replication. Afterwards go on with:
     
     npm install
     bower install
+    grunt bower-install
     grunt serve
 
 
