@@ -148,7 +148,7 @@
          ng-class="{'fa-star frog-yellow': cloth.favorit,
                    'fa-star-o': !cloth.favorit}"></i>
 
-      <img class="fabricIcon" ng-src="http://localhost:5984/sdbtest/{{cloth._id}}/fabricImage.png">
+      <img class="fabricIcon" ng-src="http://frosch03.de:5999/stoffliste//{{cloth._id}}/fabricImage.png">
       {{ cloth.type }}{{ cloth.id }} : {{ cloth.color }}, {{ cloth.ingredients }}
       <i class="pull-right fa"  ng-click="toggleOpen()"
          ng-class="{'fa-minus-square-o': $scope.isopen,
@@ -167,7 +167,7 @@
                          'fa-star-o': !cloth.favorit}"></i>
           </div><!-- /.col-lg-6 -->
           <div class="col-lg-4"> 
-            <img class="fabricImage" ng-src="http://localhost:5984/sdbtest/{{cloth._id}}/fabricImage.png">
+            <img class="fabricImage" ng-src="http://frosch03.de:5999/stoffliste/{{cloth._id}}/fabricImage.png">
             <button class="btn btn-default pull-right fa fa-trash-o fa-2x" ng-show="!edit" ng-click="remove(cloth)"></button>
             <button class="btn btn-default pull-right fa fa-cloud-upload fa-2x" ng-click="update(cloth)"></button>
             <button class="btn pull-right fa fa-edit fa-2x" ng-click="toggleEdit()" 

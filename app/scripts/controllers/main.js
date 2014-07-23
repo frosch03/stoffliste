@@ -4,11 +4,9 @@ var main = angular.module('stoffListeApp');
 
 main.factory('myPouch', [function() {
 
-  var mydb = new PouchDB('sdbtest');
-  // PouchDB.replicate('stoffliste', 'http://192.168.0.14:5984/stoffliste', {continuous: true});
-  // PouchDB.replicate('http://192.168.0.14:5984/stoffliste', 'stoffliste', {continuous: true});
-  PouchDB.replicate('sdbtest', 'http://localhost:5984/sdbtest', {continuous: true});
-  PouchDB.replicate('http://localhost:5984/sdbtest', 'sdbtest', {continuous: true});
+  var mydb = new PouchDB('stoffliste');
+  PouchDB.replicate('stoffliste', 'http://frosch03.de:5999/stoffliste', {continuous: true});
+  PouchDB.replicate('http://frosch03.de:5999/stoffliste', 'stoffliste', {continuous: true});
   return mydb;
 
 }]);
